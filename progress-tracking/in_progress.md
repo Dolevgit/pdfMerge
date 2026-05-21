@@ -2,7 +2,48 @@
 
 Tasks in this file have meaningful implementation already, but they are not finished or have a material gap that prevents closure.
 
-There are currently no active tasks tracked here.
+## PM-07 English And Hebrew Localization
+
+Completed:
+
+- Added English and Hebrew JSON locale files.
+- Added JSON localization service with English fallback behavior.
+- Applied right-to-left flow direction when Hebrew is selected in settings.
+- Localized current foundation UI strings.
+
+Still missing:
+
+- Language selection UI is not implemented yet.
+- Future PM-05 and PM-06 user-facing workflow strings must be added as those tasks begin.
+
+Why this stays open:
+
+- Full first-version localization cannot close until feature workflow strings and language selection are implemented.
+
+Completion:
+
+- 60%
+
+## PM-09 Logging And Error Reporting
+
+Completed:
+
+- Added structured local file logger based on `Microsoft.Extensions.Logging`.
+- Added portable log directory under `data/logs`.
+- Added app lifecycle logging.
+- Added status and dismissible transient message service.
+
+Still missing:
+
+- Merge failure logging cannot be completed until PM-06 implements the merge workflow.
+
+Why this stays open:
+
+- Logging foundation exists, but acceptance criteria tied to merge failures remain future work.
+
+Completion:
+
+- 60%
 
 ## Entry Template
 

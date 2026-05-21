@@ -1,2 +1,10 @@
 Guideline.md
 prompts/
+bin/
+obj/
+.vs/
+.idea/
+*.user
+*.suo
+data/
+artifacts/

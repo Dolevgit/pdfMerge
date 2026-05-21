@@ -1,8 +1,7 @@
 # Run Local
 
-This document describes how to run PdfMerge locally after the solution is implemented.
-
-The repository currently contains the documentation foundation. The application solution and source projects are planned work.
+This document is retained for compatibility with the foundation handoff.
+The canonical local run guide is `docs/run_locally.md`.
 
 ## 1. Prerequisites
 
@@ -57,7 +56,7 @@ dotnet test .\PdfMerge.sln
 
 The baseline release target is a self-contained portable Windows build.
 
-Expected command after publish scripting exists:
+Run:
 
 ```powershell
 .\build\publish-portable.ps1
