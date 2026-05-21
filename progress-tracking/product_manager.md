@@ -1,0 +1,58 @@
+# Product Manager Overview
+
+Audit date: 2026-05-21
+
+Current snapshot:
+
+- The repository contains the documentation foundation for a new portable C# Windows desktop PDF merge app.
+- Architecture, development guidelines, onboarding handoff, and local run guidance are defined.
+- Progress-tracking lifecycle files are established.
+- No application source code exists yet.
+- The approved product scope is a simple local PDF merger with English and Hebrew support.
+
+Task lifecycle:
+
+- `not_started.md` -> `in_progress.md` -> `completed.md`
+- blocked tasks live in `blocked.md` until they can return to `not_started.md` or `in_progress.md`
+
+Maintenance rule:
+
+- After every task, update the task entry in the appropriate lifecycle file.
+- If a task is in progress, keep its completion percent current in `in_progress.md`.
+- After every task, update the matching status and completion percent in `product_manager.md`.
+- Do not mark a task completed unless its acceptance criteria and required document updates are done.
+
+## 1. In Progress Tasks
+
+- None
+
+## 2. Blocked Tasks
+
+- None
+
+## 3. Not Yet Started Tasks
+
+- `PM-02` Solution Skeleton And Project Setup
+- `PM-03` PDF Library Selection And Validation
+- `PM-04` Main Window Shell
+- `PM-05` File Selection, Drag And Drop, And Reordering
+- `PM-06` Merge Workflow
+- `PM-07` English And Hebrew Localization
+- `PM-08` Portable Settings And Window State
+- `PM-09` Logging And Error Reporting
+- `PM-10` Portable Publish Baseline
+- `PM-11` Manual Validation Pass
+
+## 4. Completed Tasks
+
+- `PM-01` Documentation And Tracking Foundation
+
+## 5. Current Product Reality
+
+- The project is in foundation stage.
+- The architecture uses a local WPF desktop application with layered project boundaries.
+- The app is planned as portable by default with settings and logs under a local `data` folder.
+- The merge engine must be isolated behind an application-layer interface.
+- The PDF library must be selected and validated before merge implementation is closed.
+- English and Hebrew support are required for the first usable version.
+- Tests require explicit permission before being added, per `Guideline.md`.
