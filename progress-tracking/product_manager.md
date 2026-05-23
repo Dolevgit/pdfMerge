@@ -11,6 +11,7 @@ Current snapshot:
 - PDFsharp has been selected, wired behind the infrastructure merge adapter, and validated for PM-03 edge cases.
 - File picker, drag and drop, selected-file display, duplicate skipping, removal, select all, and single-item reordering are implemented for PDF inputs.
 - The merge workflow is implemented with save dialog output selection, overwrite confirmation, temp-file output safety, busy-state gating, friendly localized messages, and local failure logging.
+- English and Hebrew localization is implemented with a File > Language menu and persisted language selection.
 - The approved product scope is a simple local PDF merger with English and Hebrew support.
 
 Task lifecycle:
@@ -27,7 +28,7 @@ Maintenance rule:
 
 ## 1. In Progress Tasks
 
-- `PM-07` English And Hebrew Localization - 75%
+- None
 
 ## 2. Blocked Tasks
 
@@ -45,6 +46,7 @@ Maintenance rule:
 - `PM-04` Main Window Shell
 - `PM-05` File Selection, Drag And Drop, And Reordering
 - `PM-06` Merge Workflow
+- `PM-07` English And Hebrew Localization
 - `PM-08` Portable Settings And Window State
 - `PM-09` Logging And Error Reporting
 - `PM-10` Portable Publish Baseline
@@ -58,6 +60,6 @@ Maintenance rule:
 - PDFsharp is selected, wired behind `IPdfMergeService`, and validated for PM-03 edge cases.
 - File selection, drag and drop, duplicate skipping, selected-file display, remove, select all, and reordering are implemented for PM-05.
 - Merge workflow is implemented for PM-06, including temp-file output safety and overwrite confirmation.
-- English and Hebrew resource loading exists, but language selection UI remains open under PM-07.
+- English and Hebrew localization is implemented with immediate persisted language switching.
 - Local logging and user-facing error reporting are implemented for current workflows.
 - Tests require explicit permission before being added, per `Guideline.md`.

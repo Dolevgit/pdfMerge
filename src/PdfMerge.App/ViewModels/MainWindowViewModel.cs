@@ -59,8 +59,9 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
 
         SelectedFiles = new ObservableCollection<SelectedPdfViewModel>();
         AddPdfsCommand = new RelayCommand(() => _ = AddPdfsFromDialogAsync(), () => !_isAddingFiles && !_isMerging);
-        SettingsCommand = new RelayCommand(ShowDeferredFeatureMessage);
         ExitCommand = new RelayCommand(_applicationLifetime.Shutdown);
+        SetEnglishLanguageCommand = new RelayCommand(() => _ = SetLanguageAsync(SupportedLanguages.English));
+        SetHebrewLanguageCommand = new RelayCommand(() => _ = SetLanguageAsync(SupportedLanguages.Hebrew));
         MoveUpCommand = new RelayCommand(MoveSelectedFileUp, CanMoveSelectedFileUp);
         MoveDownCommand = new RelayCommand(MoveSelectedFileDown, CanMoveSelectedFileDown);
         RemoveCommand = new RelayCommand(RemoveSelectedFiles, HasSelectedFiles);
@@ -82,9 +83,11 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
 
     public RelayCommand AddPdfsCommand { get; }
 
-    public ICommand SettingsCommand { get; }
-
     public ICommand ExitCommand { get; }
+
+    public ICommand SetEnglishLanguageCommand { get; }
+
+    public ICommand SetHebrewLanguageCommand { get; }
 
     public RelayCommand MoveUpCommand { get; }
 
@@ -112,11 +115,19 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
 
     public string HelpMenuText => T("menu.help");
 
+    public string LanguageMenuText => T("menu.language");
+
     public string AddPdfsText => T("command.addPdfs");
 
-    public string SettingsText => T("command.settings");
-
     public string ExitText => T("command.exit");
+
+    public string EnglishLanguageText => T("language.english");
+
+    public string HebrewLanguageText => T("language.hebrew");
+
+    public bool IsEnglishSelected => string.Equals(_settings.Language, SupportedLanguages.English, StringComparison.OrdinalIgnoreCase);
+
+    public bool IsHebrewSelected => string.Equals(_settings.Language, SupportedLanguages.Hebrew, StringComparison.OrdinalIgnoreCase);
 
     public string MoveUpText => T("command.moveUp");
 
@@ -177,12 +188,7 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
     public async Task InitializeAsync(CancellationToken cancellationToken)
     {
         _settings = await _settingsService.LoadAsync(cancellationToken).ConfigureAwait(true);
-        _localizationService.SetLanguage(_settings.Language);
-        FlowDirection = _localizationService.Direction == CultureDirection.RightToLeft
-            ? FlowDirection.RightToLeft
-            : FlowDirection.LeftToRight;
-
-        RaiseLocalizedPropertiesChanged();
+        ApplyCurrentLanguage();
         _messageService.ShowStatus(T("status.ready"));
     }
 
@@ -283,6 +289,24 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
     }
 
     private void ShowDeferredFeatureMessage() => _messageService.ShowError(T("message.featureNotAvailable"));
+
+    private async Task SetLanguageAsync(string language)
+    {
+        if (!SupportedLanguages.IsSupported(language))
+        {
+            return;
+        }
+
+        if (string.Equals(_settings.Language, language, StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        _settings.Language = language;
+        ApplyCurrentLanguage();
+        await SaveSettingsAsync(CancellationToken.None).ConfigureAwait(true);
+        _messageService.ShowStatus(T("status.languageChanged"));
+    }
 
     private async Task MergeAsync()
     {
@@ -595,9 +619,13 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
         OnPropertyChanged(nameof(FileMenuText));
         OnPropertyChanged(nameof(EditMenuText));
         OnPropertyChanged(nameof(HelpMenuText));
+        OnPropertyChanged(nameof(LanguageMenuText));
         OnPropertyChanged(nameof(AddPdfsText));
-        OnPropertyChanged(nameof(SettingsText));
         OnPropertyChanged(nameof(ExitText));
+        OnPropertyChanged(nameof(EnglishLanguageText));
+        OnPropertyChanged(nameof(HebrewLanguageText));
+        OnPropertyChanged(nameof(IsEnglishSelected));
+        OnPropertyChanged(nameof(IsHebrewSelected));
         OnPropertyChanged(nameof(MoveUpText));
         OnPropertyChanged(nameof(MoveDownText));
         OnPropertyChanged(nameof(RemoveText));
@@ -610,6 +638,15 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
         OnPropertyChanged(nameof(FullPathHeaderText));
         OnPropertyChanged(nameof(EmptyListText));
         OnPropertyChanged(nameof(DismissText));
+    }
+
+    private void ApplyCurrentLanguage()
+    {
+        _localizationService.SetLanguage(_settings.Language);
+        FlowDirection = _localizationService.Direction == CultureDirection.RightToLeft
+            ? FlowDirection.RightToLeft
+            : FlowDirection.LeftToRight;
+        RaiseLocalizedPropertiesChanged();
     }
 
     private bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)

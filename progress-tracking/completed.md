@@ -138,6 +138,23 @@ Verified in:
 - `dotnet build .\PdfMerge.sln`
 - Temporary PM-06 workflow smoke harness for successful merge with overwrite confirmation, final replacement after temp output, cancel without overwrite, failure cleanup of temp output, no final output after failure, and input-output path rejection.
 
+## PM-07 English And Hebrew Localization
+
+Summary:
+
+- Added English and Hebrew JSON locale files.
+- Added JSON localization service with English fallback behavior.
+- Applied right-to-left flow direction when Hebrew is selected.
+- Localized current UI, file-selection workflow, and merge workflow strings.
+- Added a File > Language menu with English and Hebrew options.
+- Persisted language changes immediately to portable settings.
+- Removed the unused Settings menu item because language is currently the only user setting.
+
+Verified in:
+
+- `dotnet build .\PdfMerge.sln`
+- Temporary language-command smoke validation for English/Hebrew selection, persisted settings, flow direction, and localized property refresh.
+
 ## PM-09 Logging And Error Reporting
 
 Summary:

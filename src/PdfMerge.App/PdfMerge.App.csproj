@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <PropertyGroup>
+    <ApplicationIcon>..\..\icon.ico</ApplicationIcon>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
@@ -21,6 +22,9 @@
 
   <ItemGroup>
     <None Include="Locales\*.json" CopyToOutputDirectory="PreserveNewest" />
+    <Resource Include="..\..\icon.ico">
+      <Link>Assets\icon.ico</Link>
+    </Resource>
   </ItemGroup>
 
 </Project>

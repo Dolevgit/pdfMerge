@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using PdfMerge.App.ViewModels;
 using PdfMerge.Domain.Settings;
 
@@ -9,6 +10,7 @@ namespace PdfMerge.App.Views;
 public partial class MainWindow : Window
 {
     private readonly MainWindowViewModel _viewModel;
+    private bool _isApplyingSavedPlacement;
     private bool _isClosingAfterSave;
 
     public MainWindow(MainWindowViewModel viewModel)
@@ -18,6 +20,10 @@ public partial class MainWindow : Window
         InitializeComponent();
         Loaded += OnLoaded;
         Closing += OnClosing;
+        StateChanged += OnStateChanged;
+        LocationChanged += OnLocationChanged;
+        SizeChanged += OnSizeChanged;
+        _viewModel.PropertyChanged += OnViewModelPropertyChanged;
         FileNameColumn.Header = _viewModel.FileNameHeaderText;
         FullPathColumn.Header = _viewModel.FullPathHeaderText;
         _viewModel.SelectAllRequested += OnSelectAllRequested;
@@ -25,6 +31,7 @@ public partial class MainWindow : Window
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
+        _isApplyingSavedPlacement = true;
         var settings = _viewModel.Settings;
         Width = settings.LastNormalWindowWidth;
         Height = settings.LastNormalWindowHeight;
@@ -35,6 +42,9 @@ public partial class MainWindow : Window
         {
             WindowState = WindowState.Maximized;
         }
+
+        _isApplyingSavedPlacement = false;
+        CaptureWindowPlacement();
     }
 
     private async void OnClosing(object? sender, CancelEventArgs e)
@@ -48,7 +58,7 @@ public partial class MainWindow : Window
         CaptureWindowPlacement();
         await _viewModel.SaveSettingsAsync(CancellationToken.None).ConfigureAwait(true);
         _isClosingAfterSave = true;
-        Close();
+        _ = Dispatcher.BeginInvoke(Close, DispatcherPriority.Background);
     }
 
     private void CaptureWindowPlacement()
@@ -59,9 +69,52 @@ public partial class MainWindow : Window
         _viewModel.UpdateWindowPlacement(state, bounds.Width, bounds.Height, bounds.Left, bounds.Top);
     }
 
+    private async void OnStateChanged(object? sender, EventArgs e)
+    {
+        if (_isApplyingSavedPlacement || WindowState == WindowState.Minimized)
+        {
+            return;
+        }
+
+        CaptureWindowPlacement();
+        await _viewModel.SaveSettingsAsync(CancellationToken.None).ConfigureAwait(true);
+    }
+
+    private void OnLocationChanged(object? sender, EventArgs e)
+    {
+        CaptureNormalWindowPlacement();
+    }
+
+    private void OnSizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        CaptureNormalWindowPlacement();
+    }
+
+    private void CaptureNormalWindowPlacement()
+    {
+        if (_isApplyingSavedPlacement || WindowState != WindowState.Normal)
+        {
+            return;
+        }
+
+        _viewModel.UpdateWindowPlacement(WindowStateNames.Normal, Width, Height, Left, Top);
+    }
+
     private void OnSelectedFilesSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         _viewModel.SetSelectedFiles(SelectedFilesListView.SelectedItems.Cast<SelectedPdfViewModel>());
+    }
+
+    private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (string.Equals(e.PropertyName, nameof(MainWindowViewModel.FileNameHeaderText), StringComparison.Ordinal))
+        {
+            FileNameColumn.Header = _viewModel.FileNameHeaderText;
+        }
+        else if (string.Equals(e.PropertyName, nameof(MainWindowViewModel.FullPathHeaderText), StringComparison.Ordinal))
+        {
+            FullPathColumn.Header = _viewModel.FullPathHeaderText;
+        }
     }
 
     private void OnSelectAllRequested(object? sender, EventArgs e)

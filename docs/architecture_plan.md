@@ -137,7 +137,9 @@ Required menu bar:
 
 - File
   - Add PDFs
-  - Settings
+  - Language
+    - English
+    - Hebrew
   - Exit
 - Edit
   - Move Up
