@@ -32,5 +32,17 @@
   "message.filesRejected": "נדחו {0} קבצים. ניתן להוסיף רק קבצי PDF שניתן לקרוא.",
   "message.duplicateFilesSkipped": "דולגו {0} קבצי PDF כפולים.",
   "message.filesRemoved": "הוסרו {0} קבצי PDF.",
+  "message.mergeRequiresTwoFiles": "בחר לפחות שני קבצי PDF תקינים לפני המיזוג.",
+  "message.outputPathInvalid": "נתיב קובץ הפלט אינו תקין.",
+  "message.outputDirectoryMissing": "תיקיית הפלט אינה קיימת.",
+  "message.outputCannotOverwriteInput": "בחר קובץ פלט שונה מקבצי ה-PDF שנבחרו כקלט.",
+  "message.outputWriteFailed": "לא ניתן לכתוב את קובץ ה-PDF הממוזג. בדוק שקובץ הפלט אינו נעול ושהתיקייה ניתנת לכתיבה.",
+  "message.mergeSucceeded": "מוזגו {0} קבצי PDF בהצלחה.",
+  "status.mergeInProgress": "מיזוג כבר פועל.",
+  "status.mergeRunning": "ממזג קבצי PDF...",
+  "status.mergeProgress": "מוזגו {0} מתוך {1} קבצי PDF...",
+  "status.mergeCanceled": "המיזוג בוטל.",
+  "confirm.overwrite.title": "אישור החלפה",
+  "confirm.overwrite.message": "קובץ הפלט כבר קיים:\n\n{0}\n\nלהחליף אותו?",
   "message.mergeFailedUnsupportedPdf": "לא ניתן למזג את קבצי ה-PDF. ייתכן שאחד או יותר מהקבצים מוצפנים, פגומים או אינם נתמכים."
 }

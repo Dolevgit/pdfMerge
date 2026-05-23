@@ -96,7 +96,7 @@ Summary:
 - Added the package only to `PdfMerge.Infrastructure` under the MIT license.
 - Replaced the deferred merge placeholder with a PDFsharp-backed `IPdfMergeService` adapter.
 - Added PDF extension, existence, and readability validation through `IPdfInputValidator`.
-- Documented selection reasoning, references, validation, and remaining PM-06 workflow boundaries in `docs/pdf_library_selection.md`.
+- Documented selection reasoning, references, validation, and release-level manual validation boundaries in `docs/pdf_library_selection.md`.
 
 Verified in:
 
@@ -118,3 +118,38 @@ Verified in:
 
 - `dotnet build .\PdfMerge.sln`
 - Temporary PM-05 view-model smoke harness for multiple-file add, non-PDF rejection, duplicate skipping, move up, move down, select all request, and remove.
+
+## PM-06 Merge Workflow
+
+Summary:
+
+- Added the merge command workflow from the selected PDF list to a saved output PDF.
+- Required at least two selected valid PDF files before merge.
+- Added save dialog output selection and existing-output overwrite confirmation.
+- Prevented duplicate merge requests by disabling merge-related commands during the workflow.
+- Ran PDF merging through `IPdfMergeService` off the UI thread.
+- Wrote merged output to a temporary file in the output directory before replacing or creating the final output.
+- Blocked output paths that would overwrite selected input PDFs.
+- Added friendly localized success and failure messages.
+- Logged merge start, success, known PDF failures, validation failures, and output write failures.
+
+Verified in:
+
+- `dotnet build .\PdfMerge.sln`
+- Temporary PM-06 workflow smoke harness for successful merge with overwrite confirmation, final replacement after temp output, cancel without overwrite, failure cleanup of temp output, no final output after failure, and input-output path rejection.
+
+## PM-09 Logging And Error Reporting
+
+Summary:
+
+- Added structured local file logger based on `Microsoft.Extensions.Logging`.
+- Added portable log directory under `data/logs`.
+- Added app lifecycle logging.
+- Added status and dismissible transient message service.
+- Added merge workflow logging for start, success, validation failures, known merge failures, and output write failures.
+- Kept user-facing errors friendly while technical details stay in local logs.
+
+Verified in:
+
+- `dotnet build .\PdfMerge.sln`
+- Temporary PM-06 workflow smoke harness for merge success and failure paths.

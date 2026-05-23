@@ -10,6 +10,7 @@ Current snapshot:
 - Application source projects now exist with layered boundaries, a WPF shell, portable settings, local file logging, localization resources, and portable publish script.
 - PDFsharp has been selected, wired behind the infrastructure merge adapter, and validated for PM-03 edge cases.
 - File picker, drag and drop, selected-file display, duplicate skipping, removal, select all, and single-item reordering are implemented for PDF inputs.
+- The merge workflow is implemented with save dialog output selection, overwrite confirmation, temp-file output safety, busy-state gating, friendly localized messages, and local failure logging.
 - The approved product scope is a simple local PDF merger with English and Hebrew support.
 
 Task lifecycle:
@@ -26,8 +27,7 @@ Maintenance rule:
 
 ## 1. In Progress Tasks
 
-- `PM-07` English And Hebrew Localization - 60%
-- `PM-09` Logging And Error Reporting - 60%
+- `PM-07` English And Hebrew Localization - 75%
 
 ## 2. Blocked Tasks
 
@@ -35,7 +35,6 @@ Maintenance rule:
 
 ## 3. Not Yet Started Tasks
 
-- `PM-06` Merge Workflow
 - `PM-11` Manual Validation Pass
 
 ## 4. Completed Tasks
@@ -45,7 +44,9 @@ Maintenance rule:
 - `PM-03` PDF Library Selection And Validation
 - `PM-04` Main Window Shell
 - `PM-05` File Selection, Drag And Drop, And Reordering
+- `PM-06` Merge Workflow
 - `PM-08` Portable Settings And Window State
+- `PM-09` Logging And Error Reporting
 - `PM-10` Portable Publish Baseline
 
 ## 5. Current Product Reality
@@ -56,6 +57,7 @@ Maintenance rule:
 - The merge engine remains isolated behind an application-layer interface.
 - PDFsharp is selected, wired behind `IPdfMergeService`, and validated for PM-03 edge cases.
 - File selection, drag and drop, duplicate skipping, selected-file display, remove, select all, and reordering are implemented for PM-05.
-- English and Hebrew resource loading exists, but language selection UI and future PM-06 workflow strings remain open under PM-07.
-- Local logging exists, but merge failure logging remains open under PM-09 until PM-06 is implemented.
+- Merge workflow is implemented for PM-06, including temp-file output safety and overwrite confirmation.
+- English and Hebrew resource loading exists, but language selection UI remains open under PM-07.
+- Local logging and user-facing error reporting are implemented for current workflows.
 - Tests require explicit permission before being added, per `Guideline.md`.

@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Input;
 using Microsoft.Extensions.Logging;
 using PdfMerge.Application.Localization;
+using PdfMerge.Application.Merging;
 using PdfMerge.Application.Settings;
 using PdfMerge.Application.Validation;
 using PdfMerge.App.Services;
@@ -20,7 +21,9 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
     private readonly ISettingsService _settingsService;
     private readonly ILocalizationService _localizationService;
     private readonly IMessageService _messageService;
+    private readonly IConfirmationService _confirmationService;
     private readonly IFileDialogService _fileDialogService;
+    private readonly IPdfMergeService _pdfMergeService;
     private readonly IPdfInputValidator _pdfInputValidator;
     private readonly IApplicationLifetime _applicationLifetime;
     private readonly ILogger<MainWindowViewModel> _logger;
@@ -31,12 +34,15 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
     private FlowDirection _flowDirection = FlowDirection.LeftToRight;
     private AppSettings _settings = AppSettings.CreateDefault();
     private bool _isAddingFiles;
+    private bool _isMerging;
 
     public MainWindowViewModel(
         ISettingsService settingsService,
         ILocalizationService localizationService,
         IMessageService messageService,
+        IConfirmationService confirmationService,
         IFileDialogService fileDialogService,
+        IPdfMergeService pdfMergeService,
         IPdfInputValidator pdfInputValidator,
         IApplicationLifetime applicationLifetime,
         ILogger<MainWindowViewModel> logger)
@@ -44,20 +50,22 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
         _settingsService = settingsService;
         _localizationService = localizationService;
         _messageService = messageService;
+        _confirmationService = confirmationService;
         _fileDialogService = fileDialogService;
+        _pdfMergeService = pdfMergeService;
         _pdfInputValidator = pdfInputValidator;
         _applicationLifetime = applicationLifetime;
         _logger = logger;
 
         SelectedFiles = new ObservableCollection<SelectedPdfViewModel>();
-        AddPdfsCommand = new RelayCommand(() => _ = AddPdfsFromDialogAsync(), () => !_isAddingFiles);
+        AddPdfsCommand = new RelayCommand(() => _ = AddPdfsFromDialogAsync(), () => !_isAddingFiles && !_isMerging);
         SettingsCommand = new RelayCommand(ShowDeferredFeatureMessage);
         ExitCommand = new RelayCommand(_applicationLifetime.Shutdown);
         MoveUpCommand = new RelayCommand(MoveSelectedFileUp, CanMoveSelectedFileUp);
         MoveDownCommand = new RelayCommand(MoveSelectedFileDown, CanMoveSelectedFileDown);
         RemoveCommand = new RelayCommand(RemoveSelectedFiles, HasSelectedFiles);
-        SelectAllCommand = new RelayCommand(RequestSelectAll, () => SelectedFiles.Count > 0);
-        MergeCommand = new RelayCommand(ShowDeferredFeatureMessage, () => false);
+        SelectAllCommand = new RelayCommand(RequestSelectAll, () => !_isMerging && SelectedFiles.Count > 0);
+        MergeCommand = new RelayCommand(() => _ = MergeAsync(), CanMerge);
         OpenGitHubProjectCommand = new RelayCommand(ShowDeferredFeatureMessage, () => false);
         AboutCommand = new RelayCommand(() => _messageService.ShowSuccess(T("message.about")));
         DismissMessageCommand = new RelayCommand(_messageService.Dismiss);
@@ -86,7 +94,7 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
 
     public RelayCommand SelectAllCommand { get; }
 
-    public ICommand MergeCommand { get; }
+    public RelayCommand MergeCommand { get; }
 
     public ICommand OpenGitHubProjectCommand { get; }
 
@@ -208,6 +216,12 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
 
     public async Task AddPdfPathsAsync(IEnumerable<string> paths, CancellationToken cancellationToken)
     {
+        if (_isMerging)
+        {
+            _messageService.ShowStatus(T("status.mergeInProgress"));
+            return;
+        }
+
         var pathList = paths
             .Where(path => !string.IsNullOrWhiteSpace(path))
             .ToList();
@@ -270,6 +284,105 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
 
     private void ShowDeferredFeatureMessage() => _messageService.ShowError(T("message.featureNotAvailable"));
 
+    private async Task MergeAsync()
+    {
+        if (_isMerging)
+        {
+            return;
+        }
+
+        if (SelectedFiles.Count < 2)
+        {
+            _messageService.ShowError(T("message.mergeRequiresTwoFiles"));
+            return;
+        }
+
+        var inputFiles = SelectedFiles
+            .Select(file => new PdfInputFile(file.FileName, file.FullPath))
+            .ToList();
+
+        string? temporaryOutputPath = null;
+        SetIsMerging(true);
+
+        try
+        {
+            var invalidMessageKey = await ValidateMergeInputsAsync(inputFiles, CancellationToken.None).ConfigureAwait(true);
+            if (!string.IsNullOrWhiteSpace(invalidMessageKey))
+            {
+                _messageService.ShowError(T(invalidMessageKey));
+                return;
+            }
+
+            var outputPath = _fileDialogService.ShowSavePdfDialog(_settings.LastOutputFolder);
+            if (string.IsNullOrWhiteSpace(outputPath))
+            {
+                return;
+            }
+
+            if (!TryNormalizeOutputPath(outputPath, out var normalizedOutputPath))
+            {
+                _messageService.ShowError(T("message.outputPathInvalid"));
+                return;
+            }
+
+            if (inputFiles.Any(file => string.Equals(file.FullPath, normalizedOutputPath, StringComparison.OrdinalIgnoreCase)))
+            {
+                _messageService.ShowError(T("message.outputCannotOverwriteInput"));
+                return;
+            }
+
+            var outputDirectory = Path.GetDirectoryName(normalizedOutputPath);
+            if (string.IsNullOrWhiteSpace(outputDirectory) || !Directory.Exists(outputDirectory))
+            {
+                _messageService.ShowError(T("message.outputDirectoryMissing"));
+                return;
+            }
+
+            if (File.Exists(normalizedOutputPath) && !_confirmationService.ConfirmOverwrite(normalizedOutputPath))
+            {
+                _messageService.ShowStatus(T("status.mergeCanceled"));
+                return;
+            }
+
+            temporaryOutputPath = CreateTemporaryOutputPath(outputDirectory, normalizedOutputPath);
+            _messageService.ShowStatus(T("status.mergeRunning"));
+            _logger.LogInformation("Merge started for {InputFileCount} PDF files.", inputFiles.Count);
+
+            var progress = new Progress<MergeProgress>(mergeProgress =>
+            {
+                _messageService.ShowStatus(F("status.mergeProgress", mergeProgress.CompletedFiles, mergeProgress.TotalFiles));
+            });
+
+            await _pdfMergeService
+                .MergeAsync(new MergeRequest(inputFiles, temporaryOutputPath), progress, CancellationToken.None)
+                .ConfigureAwait(true);
+
+            File.Move(temporaryOutputPath, normalizedOutputPath, overwrite: true);
+
+            _settings.LastOutputFolder = outputDirectory;
+            await SaveSettingsAsync(CancellationToken.None).ConfigureAwait(true);
+
+            _logger.LogInformation("Merge completed for {InputFileCount} PDF files.", inputFiles.Count);
+            _messageService.ShowSuccess(F("message.mergeSucceeded", inputFiles.Count));
+        }
+        catch (PdfMergeException exception)
+        {
+            TryDeleteTemporaryFile(temporaryOutputPath);
+            _logger.LogError(exception, "Merge failed with known PDF merge error.");
+            _messageService.ShowError(T(exception.MessageKey));
+        }
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
+        {
+            TryDeleteTemporaryFile(temporaryOutputPath);
+            _logger.LogError(exception, "Merge failed because output could not be written.");
+            _messageService.ShowError(T("message.outputWriteFailed"));
+        }
+        finally
+        {
+            SetIsMerging(false);
+        }
+    }
+
     private async Task AddPdfsFromDialogAsync()
     {
         if (_isAddingFiles)
@@ -325,7 +438,7 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
     }
 
     private bool CanMoveSelectedFileUp() =>
-        _selectedFileItems.Count == 1 && SelectedFiles.IndexOf(_selectedFileItems[0]) > 0;
+        !_isMerging && _selectedFileItems.Count == 1 && SelectedFiles.IndexOf(_selectedFileItems[0]) > 0;
 
     private void MoveSelectedFileDown()
     {
@@ -337,6 +450,7 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
     }
 
     private bool CanMoveSelectedFileDown() =>
+        !_isMerging &&
         _selectedFileItems.Count == 1 &&
         SelectedFiles.IndexOf(_selectedFileItems[0]) >= 0 &&
         SelectedFiles.IndexOf(_selectedFileItems[0]) < SelectedFiles.Count - 1;
@@ -354,9 +468,79 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
         RaiseCommandStatesChanged();
     }
 
-    private bool HasSelectedFiles() => _selectedFileItems.Count > 0;
+    private bool HasSelectedFiles() => !_isMerging && _selectedFileItems.Count > 0;
 
     private void RequestSelectAll() => SelectAllRequested?.Invoke(this, EventArgs.Empty);
+
+    private bool CanMerge() => !_isMerging && SelectedFiles.Count >= 2;
+
+    private async Task<string?> ValidateMergeInputsAsync(IReadOnlyList<PdfInputFile> inputFiles, CancellationToken cancellationToken)
+    {
+        foreach (var inputFile in inputFiles)
+        {
+            var validationResult = await _pdfInputValidator.ValidateAsync(inputFile, cancellationToken).ConfigureAwait(true);
+            if (!validationResult.IsValid)
+            {
+                _logger.LogWarning("Merge input validation failed for file {FileName} with message key {MessageKey}.", inputFile.FileName, validationResult.MessageKey);
+                return validationResult.MessageKey;
+            }
+        }
+
+        return null;
+    }
+
+    private static bool TryNormalizeOutputPath(string outputPath, out string normalizedOutputPath)
+    {
+        try
+        {
+            normalizedOutputPath = Path.GetFullPath(outputPath);
+            if (!string.Equals(Path.GetExtension(normalizedOutputPath), ".pdf", StringComparison.OrdinalIgnoreCase))
+            {
+                normalizedOutputPath = Path.ChangeExtension(normalizedOutputPath, ".pdf");
+            }
+
+            return true;
+        }
+        catch (Exception exception) when (exception is ArgumentException or NotSupportedException or PathTooLongException)
+        {
+            normalizedOutputPath = string.Empty;
+            return false;
+        }
+    }
+
+    private static string CreateTemporaryOutputPath(string outputDirectory, string outputPath)
+    {
+        var fileName = Path.GetFileNameWithoutExtension(outputPath);
+        return Path.Combine(outputDirectory, $"{fileName}.{Guid.NewGuid():N}.tmp.pdf");
+    }
+
+    private static void TryDeleteTemporaryFile(string? temporaryOutputPath)
+    {
+        if (string.IsNullOrWhiteSpace(temporaryOutputPath))
+        {
+            return;
+        }
+
+        try
+        {
+            if (File.Exists(temporaryOutputPath))
+            {
+                File.Delete(temporaryOutputPath);
+            }
+        }
+        catch (IOException)
+        {
+        }
+        catch (UnauthorizedAccessException)
+        {
+        }
+    }
+
+    private void SetIsMerging(bool isMerging)
+    {
+        _isMerging = isMerging;
+        RaiseCommandStatesChanged();
+    }
 
     private void ShowAddFilesResult(int addedCount, int rejectedCount, int duplicateCount, string? singleRejectionMessageKey)
     {
@@ -397,10 +581,12 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
 
     private void RaiseCommandStatesChanged()
     {
+        AddPdfsCommand.RaiseCanExecuteChanged();
         MoveUpCommand.RaiseCanExecuteChanged();
         MoveDownCommand.RaiseCanExecuteChanged();
         RemoveCommand.RaiseCanExecuteChanged();
         SelectAllCommand.RaiseCanExecuteChanged();
+        MergeCommand.RaiseCanExecuteChanged();
     }
 
     private void RaiseLocalizedPropertiesChanged()

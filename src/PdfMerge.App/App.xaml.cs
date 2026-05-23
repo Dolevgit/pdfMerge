@@ -62,6 +62,7 @@ public partial class App : System.Windows.Application
         });
 
         services.AddSingleton<IApplicationLifetime, WpfApplicationLifetime>();
+        services.AddSingleton<IConfirmationService, WpfConfirmationService>();
         services.AddSingleton<IFileDialogService, WpfFileDialogService>();
         services.AddSingleton<ILocalizationService, JsonLocalizationService>();
         services.AddSingleton<IMessageService, MessageService>();

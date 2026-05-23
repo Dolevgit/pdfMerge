@@ -41,5 +41,4 @@ The package is added only to `PdfMerge.Infrastructure`, and the app continues to
 
 ## Known Limitations
 
-- PM-06 still owns the full merge workflow, including save dialog, overwrite confirmation, temporary output file handling, UI busy state, and final user-facing merge messages.
 - PM-11 still owns release-level manual validation of the full Windows desktop workflow.
