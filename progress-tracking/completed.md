@@ -87,3 +87,34 @@ Verified in:
 
 - `.\build\publish-portable.ps1`
 - Published app startup check from `artifacts/publish/win-x64/PdfMerge.App.exe`
+
+## PM-03 PDF Library Selection And Validation
+
+Summary:
+
+- Selected `PDFsharp` 6.2.4 as the PDF merge library.
+- Added the package only to `PdfMerge.Infrastructure` under the MIT license.
+- Replaced the deferred merge placeholder with a PDFsharp-backed `IPdfMergeService` adapter.
+- Added PDF extension, existence, and readability validation through `IPdfInputValidator`.
+- Documented selection reasoning, references, validation, and remaining PM-06 workflow boundaries in `docs/pdf_library_selection.md`.
+
+Verified in:
+
+- `dotnet build .\PdfMerge.sln`
+- Temporary PM-03 smoke harness for ordinary merge, mixed-page-size merge, corrupt PDF failure, encrypted PDF failure, unsupported extension validation, and locked-file validation.
+
+## PM-05 File Selection, Drag And Drop, And Reordering
+
+Summary:
+
+- Wired file picker selection through the existing WPF file dialog service.
+- Added drag and drop support for file paths.
+- Added localized validation feedback for non-PDF, missing, unreadable, invalid, and duplicate files.
+- Defined duplicate handling as skip-and-notify using case-insensitive full path comparison.
+- Displayed selected file names and full paths in the main file list.
+- Added multi-select remove, select all, and single-item move up/down behavior.
+
+Verified in:
+
+- `dotnet build .\PdfMerge.sln`
+- Temporary PM-05 view-model smoke harness for multiple-file add, non-PDF rejection, duplicate skipping, move up, move down, select all request, and remove.

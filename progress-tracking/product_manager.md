@@ -8,7 +8,7 @@ Current snapshot:
 - Architecture, development guidelines, onboarding handoff, and local run guidance are defined.
 - Progress-tracking lifecycle files are established.
 - Application source projects now exist with layered boundaries, a WPF shell, portable settings, local file logging, localization resources, and portable publish script.
-- PDFsharp has been selected and wired behind the infrastructure merge adapter for ordinary merge behavior.
+- PDFsharp has been selected, wired behind the infrastructure merge adapter, and validated for PM-03 edge cases.
 - File picker, drag and drop, selected-file display, duplicate skipping, removal, select all, and single-item reordering are implemented for PDF inputs.
 - The approved product scope is a simple local PDF merger with English and Hebrew support.
 
@@ -26,8 +26,6 @@ Maintenance rule:
 
 ## 1. In Progress Tasks
 
-- `PM-03` PDF Library Selection And Validation - 50%
-- `PM-05` File Selection, Drag And Drop, And Reordering - 75%
 - `PM-07` English And Hebrew Localization - 60%
 - `PM-09` Logging And Error Reporting - 60%
 
@@ -44,7 +42,9 @@ Maintenance rule:
 
 - `PM-01` Documentation And Tracking Foundation
 - `PM-02` Solution Skeleton And Project Setup
+- `PM-03` PDF Library Selection And Validation
 - `PM-04` Main Window Shell
+- `PM-05` File Selection, Drag And Drop, And Reordering
 - `PM-08` Portable Settings And Window State
 - `PM-10` Portable Publish Baseline
 
@@ -54,7 +54,8 @@ Maintenance rule:
 - The architecture uses a local WPF desktop application with layered project boundaries.
 - The app is planned as portable by default with settings and logs under a local `data` folder.
 - The merge engine remains isolated behind an application-layer interface.
-- PDFsharp is selected and wired for ordinary merge behavior, with edge-case validation still open under PM-03.
+- PDFsharp is selected, wired behind `IPdfMergeService`, and validated for PM-03 edge cases.
+- File selection, drag and drop, duplicate skipping, selected-file display, remove, select all, and reordering are implemented for PM-05.
 - English and Hebrew resource loading exists, but language selection UI and future PM-06 workflow strings remain open under PM-07.
 - Local logging exists, but merge failure logging remains open under PM-09 until PM-06 is implemented.
 - Tests require explicit permission before being added, per `Guideline.md`.

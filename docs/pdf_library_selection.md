@@ -31,9 +31,15 @@ The package is added only to `PdfMerge.Infrastructure`, and the app continues to
 
 - `dotnet build .\PdfMerge.sln` passes with zero warnings and zero errors.
 - A temporary smoke harness created two ordinary one-page PDFs, merged them through `PdfSharpMergeService`, and verified that the output PDF contains two pages.
+- A temporary PM-03 validation harness verified:
+  - ordinary PDF merge succeeds in order
+  - mixed-page-size PDF merge succeeds
+  - corrupt PDFs fail with `message.mergeFailedUnsupportedPdf`
+  - encrypted PDFs fail with `message.mergeFailedUnsupportedPdf`
+  - unsupported file extensions fail validation with `message.invalidPdfExtension`
+  - locked files fail validation with `message.fileNotReadable`
 
 ## Known Limitations
 
-- PM-03 is not complete until encrypted, corrupt, locked, unsupported, and large mixed-page-size PDFs are manually validated.
 - PM-06 still owns the full merge workflow, including save dialog, overwrite confirmation, temporary output file handling, UI busy state, and final user-facing merge messages.
-- This pass validates ordinary PDF merge behavior only; broader edge-case validation remains tracked under PM-03.
+- PM-11 still owns release-level manual validation of the full Windows desktop workflow.

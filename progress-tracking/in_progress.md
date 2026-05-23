@@ -2,54 +2,6 @@
 
 Tasks in this file have meaningful implementation already, but they are not finished or have a material gap that prevents closure.
 
-## PM-03 PDF Library Selection And Validation
-
-Completed:
-
-- Selected `PDFsharp` 6.2.4 as the PDF merge library.
-- Added the package only to `PdfMerge.Infrastructure`.
-- Implemented a PDFsharp-backed `IPdfMergeService` adapter.
-- Added PDF extension, existence, and readability validation through `IPdfInputValidator`.
-- Documented license, selection reasoning, and open limitations in `docs/pdf_library_selection.md`.
-- Smoke-validated ordinary merge behavior with two generated one-page PDFs.
-
-Still missing:
-
-- Manual validation for encrypted, corrupt, locked, unsupported, large, and mixed-page-size PDFs.
-- Full output safety behavior remains part of PM-06, including temporary output files and overwrite protection.
-
-Why this stays open:
-
-- The ordinary merge path is implemented, but the full PM-03 edge-case validation matrix is not complete yet.
-
-Completion:
-
-- 50%
-
-## PM-05 File Selection, Drag And Drop, And Reordering
-
-Completed:
-
-- Wired file picker selection through the existing WPF file dialog service.
-- Added drag and drop support for file paths.
-- Added localized validation feedback for non-PDF, missing, unreadable, invalid, and duplicate files.
-- Defined duplicate handling as skip-and-notify using case-insensitive full path comparison.
-- Displayed selected file names and full paths in the main file list.
-- Added multi-select remove, select all, and single-item move up/down behavior.
-
-Still missing:
-
-- Manual Windows validation for file picker, drag and drop, keyboard selection, and reorder behavior.
-- PM-06 still needs to consume the selected list for the final merge workflow.
-
-Why this stays open:
-
-- The implementation is present, but manual interaction validation is still required before closure.
-
-Completion:
-
-- 75%
-
 ## PM-07 English And Hebrew Localization
 
 Completed:
