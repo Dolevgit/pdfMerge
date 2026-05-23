@@ -71,7 +71,7 @@ Dependency rules:
 - Do not add dependencies only for convenience if the .NET platform already provides a simple, reliable option.
 - Validate the selected PDF library against normal, large, encrypted, corrupt, and mixed-page-size PDFs before closing the PDF engine task.
 
-The PDF library selection is an implementation task. Until that task is complete, all architecture must depend on `IPdfMergeService`, not on a concrete library.
+The selected PDF library is `PDFsharp` 6.2.4, added only to `PdfMerge.Infrastructure` under the MIT license. Application and UI code must continue to depend on `IPdfMergeService`, not on concrete PDFsharp types. Selection details and open validation gaps are tracked in `docs/pdf_library_selection.md`.
 
 ## 6. Proposed Solution Structure
 

@@ -19,7 +19,18 @@
   "column.fileName": "File name",
   "column.fullPath": "Full path",
   "status.ready": "Ready",
+  "status.orderUpdated": "File order updated.",
   "message.emptyList": "No PDF files selected.",
   "message.featureNotAvailable": "This workflow is not implemented yet.",
-  "message.about": "PdfMerge 0.1.0 foundation build."
+  "message.about": "PdfMerge 0.1.0 foundation build.",
+  "message.invalidPdfExtension": "Only PDF files can be added.",
+  "message.fileDoesNotExist": "The selected file does not exist.",
+  "message.fileNotReadable": "The selected file cannot be read.",
+  "message.invalidFilePath": "The selected file path is not valid.",
+  "message.filesCouldNotBeAdded": "PDF files could not be added.",
+  "message.filesAdded": "Added {0} PDF file(s). Rejected {1}; skipped duplicates {2}.",
+  "message.filesRejected": "Rejected {0} file(s). Only readable PDF files can be added.",
+  "message.duplicateFilesSkipped": "Skipped {0} duplicate PDF file(s).",
+  "message.filesRemoved": "Removed {0} PDF file(s).",
+  "message.mergeFailedUnsupportedPdf": "The PDF files could not be merged. One or more files may be encrypted, corrupt, or unsupported."
 }

@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
 using PdfMerge.App.ViewModels;
 using PdfMerge.Domain.Settings;
 
@@ -19,6 +20,7 @@ public partial class MainWindow : Window
         Closing += OnClosing;
         FileNameColumn.Header = _viewModel.FileNameHeaderText;
         FullPathColumn.Header = _viewModel.FullPathHeaderText;
+        _viewModel.SelectAllRequested += OnSelectAllRequested;
     }
 
     private void OnLoaded(object sender, RoutedEventArgs e)
@@ -55,5 +57,31 @@ public partial class MainWindow : Window
         var bounds = WindowState == WindowState.Normal ? new Rect(Left, Top, Width, Height) : RestoreBounds;
 
         _viewModel.UpdateWindowPlacement(state, bounds.Width, bounds.Height, bounds.Left, bounds.Top);
+    }
+
+    private void OnSelectedFilesSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        _viewModel.SetSelectedFiles(SelectedFilesListView.SelectedItems.Cast<SelectedPdfViewModel>());
+    }
+
+    private void OnSelectAllRequested(object? sender, EventArgs e)
+    {
+        SelectedFilesListView.SelectAll();
+    }
+
+    private void OnPreviewDragOver(object sender, DragEventArgs e)
+    {
+        e.Effects = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+        e.Handled = true;
+    }
+
+    private async void OnDrop(object sender, DragEventArgs e)
+    {
+        if (e.Data.GetData(DataFormats.FileDrop) is string[] paths)
+        {
+            await _viewModel.AddPdfPathsAsync(paths, CancellationToken.None).ConfigureAwait(true);
+        }
+
+        e.Handled = true;
     }
 }

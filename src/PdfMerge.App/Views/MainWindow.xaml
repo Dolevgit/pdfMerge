@@ -10,7 +10,10 @@
         Height="680"
         MinWidth="800"
         MinHeight="520"
-        FlowDirection="{Binding FlowDirection}">
+        FlowDirection="{Binding FlowDirection}"
+        AllowDrop="True"
+        PreviewDragOver="OnPreviewDragOver"
+        Drop="OnDrop">
     <Window.InputBindings>
         <KeyBinding Key="O" Modifiers="Control" Command="{Binding AddPdfsCommand}" />
         <KeyBinding Key="Delete" Command="{Binding RemoveCommand}" />
@@ -148,8 +151,11 @@
                            FontWeight="SemiBold"
                            Margin="0,0,0,8" />
 
-                <ListView Grid.Row="1"
+                <ListView x:Name="SelectedFilesListView"
+                          Grid.Row="1"
                           ItemsSource="{Binding SelectedFiles}"
+                          SelectionMode="Extended"
+                          SelectionChanged="OnSelectedFilesSelectionChanged"
                           KeyboardNavigation.TabNavigation="Continue">
                     <ListView.View>
                         <GridView>

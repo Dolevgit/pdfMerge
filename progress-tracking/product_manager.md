@@ -1,6 +1,6 @@
 # Product Manager Overview
 
-Audit date: 2026-05-21
+Audit date: 2026-05-23
 
 Current snapshot:
 
@@ -8,6 +8,8 @@ Current snapshot:
 - Architecture, development guidelines, onboarding handoff, and local run guidance are defined.
 - Progress-tracking lifecycle files are established.
 - Application source projects now exist with layered boundaries, a WPF shell, portable settings, local file logging, localization resources, and portable publish script.
+- PDFsharp has been selected and wired behind the infrastructure merge adapter for ordinary merge behavior.
+- File picker, drag and drop, selected-file display, duplicate skipping, removal, select all, and single-item reordering are implemented for PDF inputs.
 - The approved product scope is a simple local PDF merger with English and Hebrew support.
 
 Task lifecycle:
@@ -24,6 +26,8 @@ Maintenance rule:
 
 ## 1. In Progress Tasks
 
+- `PM-03` PDF Library Selection And Validation - 50%
+- `PM-05` File Selection, Drag And Drop, And Reordering - 75%
 - `PM-07` English And Hebrew Localization - 60%
 - `PM-09` Logging And Error Reporting - 60%
 
@@ -33,8 +37,6 @@ Maintenance rule:
 
 ## 3. Not Yet Started Tasks
 
-- `PM-03` PDF Library Selection And Validation
-- `PM-05` File Selection, Drag And Drop, And Reordering
 - `PM-06` Merge Workflow
 - `PM-11` Manual Validation Pass
 
@@ -51,8 +53,8 @@ Maintenance rule:
 - The project is in foundation stage with a verified runnable WPF shell.
 - The architecture uses a local WPF desktop application with layered project boundaries.
 - The app is planned as portable by default with settings and logs under a local `data` folder.
-- The merge engine must be isolated behind an application-layer interface.
-- The PDF library must be selected and validated before merge implementation is closed.
-- English and Hebrew resource loading exists, but language selection UI and future workflow strings remain open under PM-07.
+- The merge engine remains isolated behind an application-layer interface.
+- PDFsharp is selected and wired for ordinary merge behavior, with edge-case validation still open under PM-03.
+- English and Hebrew resource loading exists, but language selection UI and future PM-06 workflow strings remain open under PM-07.
 - Local logging exists, but merge failure logging remains open under PM-09 until PM-06 is implemented.
 - Tests require explicit permission before being added, per `Guideline.md`.

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using PdfMerge.Application.Localization;
 using PdfMerge.Application.Merging;
 using PdfMerge.Application.Settings;
+using PdfMerge.Application.Validation;
 using PdfMerge.App.Services;
 using PdfMerge.App.ViewModels;
 using PdfMerge.App.Views;
@@ -65,7 +66,8 @@ public partial class App : System.Windows.Application
         services.AddSingleton<ILocalizationService, JsonLocalizationService>();
         services.AddSingleton<IMessageService, MessageService>();
         services.AddSingleton<ISettingsService, JsonSettingsService>();
-        services.AddSingleton<IPdfMergeService, DeferredPdfMergeService>();
+        services.AddSingleton<IPdfInputValidator, PdfInputValidator>();
+        services.AddSingleton<IPdfMergeService, PdfSharpMergeService>();
         services.AddSingleton<MainWindowViewModel>();
         services.AddSingleton<MainWindow>();
     }

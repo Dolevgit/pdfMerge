@@ -19,7 +19,18 @@
   "column.fileName": "שם קובץ",
   "column.fullPath": "נתיב מלא",
   "status.ready": "מוכן",
+  "status.orderUpdated": "סדר הקבצים עודכן.",
   "message.emptyList": "לא נבחרו קבצי PDF.",
   "message.featureNotAvailable": "תהליך זה עדיין לא מומש.",
-  "message.about": "PdfMerge 0.1.0 - בניית יסודות."
+  "message.about": "PdfMerge 0.1.0 - בניית יסודות.",
+  "message.invalidPdfExtension": "ניתן להוסיף קבצי PDF בלבד.",
+  "message.fileDoesNotExist": "הקובץ שנבחר אינו קיים.",
+  "message.fileNotReadable": "לא ניתן לקרוא את הקובץ שנבחר.",
+  "message.invalidFilePath": "נתיב הקובץ שנבחר אינו תקין.",
+  "message.filesCouldNotBeAdded": "לא ניתן להוסיף קבצי PDF.",
+  "message.filesAdded": "נוספו {0} קבצי PDF. נדחו {1}; דולגו כפילויות {2}.",
+  "message.filesRejected": "נדחו {0} קבצים. ניתן להוסיף רק קבצי PDF שניתן לקרוא.",
+  "message.duplicateFilesSkipped": "דולגו {0} קבצי PDF כפולים.",
+  "message.filesRemoved": "הוסרו {0} קבצי PDF.",
+  "message.mergeFailedUnsupportedPdf": "לא ניתן למזג את קבצי ה-PDF. ייתכן שאחד או יותר מהקבצים מוצפנים, פגומים או אינם נתמכים."
 }
