@@ -68,6 +68,7 @@ Summary:
 - Added defaults, validation, repair of invalid values, and atomic save behavior.
 - Added required settings fields for schema version, language, theme, window state, size, position, last input folder, and last output folder.
 - Wired main window placement load and save.
+- Fixed window placement persistence so normal size and position changes are saved before close and restored on next launch.
 
 Verified in:
 

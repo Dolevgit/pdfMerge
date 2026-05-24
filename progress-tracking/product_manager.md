@@ -8,6 +8,7 @@ Current snapshot:
 - Architecture, development guidelines, onboarding handoff, and local run guidance are defined.
 - Progress-tracking lifecycle files are established.
 - Application source projects now exist with layered boundaries, a WPF shell, portable settings, local file logging, localization resources, and portable publish script.
+- Window size, position, and state persist across app launches.
 - PDFsharp has been selected, wired behind the infrastructure merge adapter, and validated for PM-03 edge cases.
 - File picker, drag and drop, selected-file display, duplicate skipping, removal, select all, and single-item reordering are implemented for PDF inputs.
 - The merge workflow is implemented with save dialog output selection, overwrite confirmation, temp-file output safety, busy-state gating, friendly localized messages, and local failure logging.
@@ -67,6 +68,7 @@ Maintenance rule:
 - File selection, drag and drop, duplicate skipping, selected-file display, remove, select all, and reordering are implemented for PM-05.
 - Merge workflow is implemented for PM-06, including temp-file output safety and overwrite confirmation.
 - English and Hebrew localization is implemented with immediate persisted language switching.
+- Window placement is loaded on startup and saved after resize/move/state changes and before close.
 - Selected PDF rows include direct move up, move down, and remove actions with localized tooltips and accessible names.
 - File row actions remain visible at the trailing physical edge for the current language direction.
 - Local logging and user-facing error reporting are implemented for current workflows.

@@ -9,13 +9,23 @@ namespace PdfMerge.App.Views;
 
 public partial class MainWindow : Window
 {
+    private static readonly TimeSpan PlacementSaveDelay = TimeSpan.FromMilliseconds(500);
+
     private readonly MainWindowViewModel _viewModel;
-    private bool _isApplyingSavedPlacement;
+    private readonly DispatcherTimer _placementSaveTimer;
+    private readonly SemaphoreSlim _placementSaveGate = new(1, 1);
+    private bool _isApplyingSavedPlacement = true;
     private bool _isClosingAfterSave;
 
     public MainWindow(MainWindowViewModel viewModel)
     {
         _viewModel = viewModel;
+        _placementSaveTimer = new DispatcherTimer
+        {
+            Interval = PlacementSaveDelay
+        };
+        _placementSaveTimer.Tick += OnPlacementSaveTimerTick;
+
         DataContext = _viewModel;
         InitializeComponent();
         Loaded += OnLoaded;
@@ -52,8 +62,9 @@ public partial class MainWindow : Window
         }
 
         e.Cancel = true;
+        _placementSaveTimer.Stop();
         CaptureWindowPlacement();
-        await _viewModel.SaveSettingsAsync(CancellationToken.None).ConfigureAwait(true);
+        await SaveWindowPlacementAsync().ConfigureAwait(true);
         _isClosingAfterSave = true;
         _ = Dispatcher.BeginInvoke(Close, DispatcherPriority.Background);
     }
@@ -73,8 +84,9 @@ public partial class MainWindow : Window
             return;
         }
 
+        _placementSaveTimer.Stop();
         CaptureWindowPlacement();
-        await _viewModel.SaveSettingsAsync(CancellationToken.None).ConfigureAwait(true);
+        await SaveWindowPlacementAsync().ConfigureAwait(true);
     }
 
     private void OnLocationChanged(object? sender, EventArgs e)
@@ -95,6 +107,43 @@ public partial class MainWindow : Window
         }
 
         _viewModel.UpdateWindowPlacement(WindowStateNames.Normal, Width, Height, Left, Top);
+        SchedulePlacementSave();
+    }
+
+    private void SchedulePlacementSave()
+    {
+        if (_isClosingAfterSave)
+        {
+            return;
+        }
+
+        _placementSaveTimer.Stop();
+        _placementSaveTimer.Start();
+    }
+
+    private async void OnPlacementSaveTimerTick(object? sender, EventArgs e)
+    {
+        _placementSaveTimer.Stop();
+
+        if (_isClosingAfterSave)
+        {
+            return;
+        }
+
+        await SaveWindowPlacementAsync().ConfigureAwait(true);
+    }
+
+    private async Task SaveWindowPlacementAsync()
+    {
+        await _placementSaveGate.WaitAsync(CancellationToken.None).ConfigureAwait(true);
+        try
+        {
+            await _viewModel.SaveSettingsAsync(CancellationToken.None).ConfigureAwait(true);
+        }
+        finally
+        {
+            _placementSaveGate.Release();
+        }
     }
 
     private void OnSelectedFilesSelectionChanged(object sender, SelectionChangedEventArgs e)
