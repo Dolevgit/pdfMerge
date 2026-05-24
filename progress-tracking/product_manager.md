@@ -1,6 +1,6 @@
 # Product Manager Overview
 
-Audit date: 2026-05-23
+Audit date: 2026-05-24
 
 Current snapshot:
 
@@ -12,6 +12,8 @@ Current snapshot:
 - File picker, drag and drop, selected-file display, duplicate skipping, removal, select all, and single-item reordering are implemented for PDF inputs.
 - The merge workflow is implemented with save dialog output selection, overwrite confirmation, temp-file output safety, busy-state gating, friendly localized messages, and local failure logging.
 - English and Hebrew localization is implemented with a File > Language menu and persisted language selection.
+- The selected-file list now includes row-level move up, move down, and remove icon actions, with the main command area simplified outside `ToolBarTray`.
+- Success and error messages are shown in the status bar with transient green/red text emphasis.
 - The approved product scope is a simple local PDF merger with English and Hebrew support.
 
 Task lifecycle:
@@ -50,6 +52,8 @@ Maintenance rule:
 - `PM-08` Portable Settings And Window State
 - `PM-09` Logging And Error Reporting
 - `PM-10` Portable Publish Baseline
+- `PM-12` File List Row Actions
+- `PM-13` Status Bar Message Styling
 
 ## 5. Current Product Reality
 
@@ -61,5 +65,7 @@ Maintenance rule:
 - File selection, drag and drop, duplicate skipping, selected-file display, remove, select all, and reordering are implemented for PM-05.
 - Merge workflow is implemented for PM-06, including temp-file output safety and overwrite confirmation.
 - English and Hebrew localization is implemented with immediate persisted language switching.
+- Selected PDF rows include direct move up, move down, and remove actions with localized tooltips and accessible names.
 - Local logging and user-facing error reporting are implemented for current workflows.
+- The main window uses status-bar-only user messages with transient success/error color.
 - Tests require explicit permission before being added, per `Guideline.md`.

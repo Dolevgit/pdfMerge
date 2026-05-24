@@ -51,7 +51,7 @@ Verified in:
 Summary:
 
 - Added WPF main window shell with native File, Edit, and Help menus.
-- Added toolbar command area, selected PDF list area, status bar, and dismissible message host.
+- Added toolbar command area, selected PDF list area, and status bar.
 - Used Segoe MDL2 Assets icon glyphs with text for visible buttons.
 - Defined minimum supported window size and baseline keyboard bindings.
 
@@ -162,7 +162,7 @@ Summary:
 - Added structured local file logger based on `Microsoft.Extensions.Logging`.
 - Added portable log directory under `data/logs`.
 - Added app lifecycle logging.
-- Added status and dismissible transient message service.
+- Added status-bar transient message service with success and error state.
 - Added merge workflow logging for start, success, validation failures, known merge failures, and output write failures.
 - Kept user-facing errors friendly while technical details stay in local logs.
 
@@ -170,3 +170,30 @@ Verified in:
 
 - `dotnet build .\PdfMerge.sln`
 - Temporary PM-06 workflow smoke harness for merge success and failure paths.
+
+## PM-12 File List Row Actions
+
+Summary:
+
+- Replaced the main-window `ToolBarTray` with a simpler command area for adding PDFs and running merge.
+- Added row-level icon actions beside each selected PDF for move up, move down, and remove.
+- Kept row actions localized through tooltips and accessibility names.
+- Preserved existing menu and keyboard commands for selection-based reorder and remove behavior.
+
+Verified in:
+
+- `dotnet build .\PdfMerge.sln`
+
+## PM-13 Status Bar Message Styling
+
+Summary:
+
+- Removed the separate main-window message host and its `HasMessage` binding.
+- Simplified message state so user-facing messages are shown through the status bar.
+- Added status-bar text coloring for success and error states.
+- Kept transient success/error emphasis resetting automatically after 5 seconds.
+- Updated project documentation and guidelines to match the status-bar-only message behavior.
+
+Verified in:
+
+- `dotnet build .\PdfMerge.sln`

@@ -29,7 +29,6 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
     private readonly ILogger<MainWindowViewModel> _logger;
     private readonly List<SelectedPdfViewModel> _selectedFileItems = [];
     private string _statusText = string.Empty;
-    private string? _messageText;
     private UserMessageKind _messageKind;
     private FlowDirection _flowDirection = FlowDirection.LeftToRight;
     private AppSettings _settings = AppSettings.CreateDefault();
@@ -65,11 +64,13 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
         MoveUpCommand = new RelayCommand(MoveSelectedFileUp, CanMoveSelectedFileUp);
         MoveDownCommand = new RelayCommand(MoveSelectedFileDown, CanMoveSelectedFileDown);
         RemoveCommand = new RelayCommand(RemoveSelectedFiles, HasSelectedFiles);
+        MoveFileUpCommand = new RelayCommand(MoveFileUp, CanMoveFileUp);
+        MoveFileDownCommand = new RelayCommand(MoveFileDown, CanMoveFileDown);
+        RemoveFileCommand = new RelayCommand(RemoveFile, CanRemoveFile);
         SelectAllCommand = new RelayCommand(RequestSelectAll, () => !_isMerging && SelectedFiles.Count > 0);
         MergeCommand = new RelayCommand(() => _ = MergeAsync(), CanMerge);
         OpenGitHubProjectCommand = new RelayCommand(ShowDeferredFeatureMessage, () => false);
         AboutCommand = new RelayCommand(() => _messageService.ShowSuccess(T("message.about")));
-        DismissMessageCommand = new RelayCommand(_messageService.Dismiss);
 
         _messageService.MessageChanged += OnMessageChanged;
         SelectedFiles.CollectionChanged += (_, _) => RaiseCommandStatesChanged();
@@ -95,6 +96,12 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
 
     public RelayCommand RemoveCommand { get; }
 
+    public RelayCommand MoveFileUpCommand { get; }
+
+    public RelayCommand MoveFileDownCommand { get; }
+
+    public RelayCommand RemoveFileCommand { get; }
+
     public RelayCommand SelectAllCommand { get; }
 
     public RelayCommand MergeCommand { get; }
@@ -102,8 +109,6 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
     public ICommand OpenGitHubProjectCommand { get; }
 
     public ICommand AboutCommand { get; }
-
-    public ICommand DismissMessageCommand { get; }
 
     public AppSettings Settings => _settings;
 
@@ -149,29 +154,15 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
 
     public string FullPathHeaderText => T("column.fullPath");
 
-    public string EmptyListText => T("message.emptyList");
+    public string ActionsHeaderText => T("column.actions");
 
-    public string DismissText => T("command.dismiss");
+    public string EmptyListText => T("message.emptyList");
 
     public string StatusText
     {
         get => _statusText;
         private set => SetField(ref _statusText, value);
     }
-
-    public string? MessageText
-    {
-        get => _messageText;
-        private set
-        {
-            if (SetField(ref _messageText, value))
-            {
-                OnPropertyChanged(nameof(HasMessage));
-            }
-        }
-    }
-
-    public bool HasMessage => !string.IsNullOrWhiteSpace(MessageText);
 
     public UserMessageKind MessageKind
     {
@@ -454,30 +445,64 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
 
     private void MoveSelectedFileUp()
     {
-        var selectedFile = _selectedFileItems.Single();
+        MoveFileUp(_selectedFileItems.Single());
+    }
+
+    private bool CanMoveSelectedFileUp() =>
+        _selectedFileItems.Count == 1 && CanMoveFileUp(_selectedFileItems[0]);
+
+    private void MoveSelectedFileDown()
+    {
+        MoveFileDown(_selectedFileItems.Single());
+    }
+
+    private bool CanMoveSelectedFileDown() =>
+        _selectedFileItems.Count == 1 && CanMoveFileDown(_selectedFileItems[0]);
+
+    private void MoveFileUp(object? parameter)
+    {
+        if (parameter is not SelectedPdfViewModel selectedFile)
+        {
+            return;
+        }
+
         var currentIndex = SelectedFiles.IndexOf(selectedFile);
+        if (currentIndex <= 0)
+        {
+            return;
+        }
+
         SelectedFiles.Move(currentIndex, currentIndex - 1);
         _messageService.ShowStatus(T("status.orderUpdated"));
         RaiseCommandStatesChanged();
     }
 
-    private bool CanMoveSelectedFileUp() =>
-        !_isMerging && _selectedFileItems.Count == 1 && SelectedFiles.IndexOf(_selectedFileItems[0]) > 0;
+    private bool CanMoveFileUp(object? parameter) =>
+        !_isMerging && parameter is SelectedPdfViewModel selectedFile && SelectedFiles.IndexOf(selectedFile) > 0;
 
-    private void MoveSelectedFileDown()
+    private void MoveFileDown(object? parameter)
     {
-        var selectedFile = _selectedFileItems.Single();
+        if (parameter is not SelectedPdfViewModel selectedFile)
+        {
+            return;
+        }
+
         var currentIndex = SelectedFiles.IndexOf(selectedFile);
+        if (currentIndex < 0 || currentIndex >= SelectedFiles.Count - 1)
+        {
+            return;
+        }
+
         SelectedFiles.Move(currentIndex, currentIndex + 1);
         _messageService.ShowStatus(T("status.orderUpdated"));
         RaiseCommandStatesChanged();
     }
 
-    private bool CanMoveSelectedFileDown() =>
+    private bool CanMoveFileDown(object? parameter) =>
         !_isMerging &&
-        _selectedFileItems.Count == 1 &&
-        SelectedFiles.IndexOf(_selectedFileItems[0]) >= 0 &&
-        SelectedFiles.IndexOf(_selectedFileItems[0]) < SelectedFiles.Count - 1;
+        parameter is SelectedPdfViewModel selectedFile &&
+        SelectedFiles.IndexOf(selectedFile) >= 0 &&
+        SelectedFiles.IndexOf(selectedFile) < SelectedFiles.Count - 1;
 
     private void RemoveSelectedFiles()
     {
@@ -491,6 +516,22 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
         _messageService.ShowSuccess(F("message.filesRemoved", selectedFiles.Count));
         RaiseCommandStatesChanged();
     }
+
+    private void RemoveFile(object? parameter)
+    {
+        if (parameter is not SelectedPdfViewModel selectedFile || !SelectedFiles.Contains(selectedFile))
+        {
+            return;
+        }
+
+        SelectedFiles.Remove(selectedFile);
+        _selectedFileItems.Remove(selectedFile);
+        _messageService.ShowSuccess(F("message.filesRemoved", 1));
+        RaiseCommandStatesChanged();
+    }
+
+    private bool CanRemoveFile(object? parameter) =>
+        !_isMerging && parameter is SelectedPdfViewModel selectedFile && SelectedFiles.Contains(selectedFile);
 
     private bool HasSelectedFiles() => !_isMerging && _selectedFileItems.Count > 0;
 
@@ -595,7 +636,6 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
     private void OnMessageChanged(object? sender, UserMessageChangedEventArgs e)
     {
         StatusText = e.StatusText;
-        MessageText = e.MessageText;
         MessageKind = e.MessageKind;
     }
 
@@ -609,6 +649,9 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
         MoveUpCommand.RaiseCanExecuteChanged();
         MoveDownCommand.RaiseCanExecuteChanged();
         RemoveCommand.RaiseCanExecuteChanged();
+        MoveFileUpCommand.RaiseCanExecuteChanged();
+        MoveFileDownCommand.RaiseCanExecuteChanged();
+        RemoveFileCommand.RaiseCanExecuteChanged();
         SelectAllCommand.RaiseCanExecuteChanged();
         MergeCommand.RaiseCanExecuteChanged();
     }
@@ -636,8 +679,8 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
         OnPropertyChanged(nameof(SelectedFilesText));
         OnPropertyChanged(nameof(FileNameHeaderText));
         OnPropertyChanged(nameof(FullPathHeaderText));
+        OnPropertyChanged(nameof(ActionsHeaderText));
         OnPropertyChanged(nameof(EmptyListText));
-        OnPropertyChanged(nameof(DismissText));
     }
 
     private void ApplyCurrentLanguage()

@@ -117,7 +117,7 @@ Runtime responsibilities:
 7. Let the user reorder the list.
 8. Ask for an output path.
 9. Run merge operation on a background thread.
-10. Report success or clear user-facing failure in the status bar and dismissible message area.
+10. Report success or clear user-facing failure in the status bar.
 
 ## 8. UI Architecture
 
@@ -131,7 +131,6 @@ Required main-window areas:
 - reorder controls
 - merge command
 - status bar
-- dismissible message host
 
 Required menu bar:
 
@@ -162,8 +161,8 @@ Button rules:
 Status and message rules:
 
 - User-facing information should appear in the status bar.
-- Success and error messages must be dismissible.
-- Messages should disappear automatically after 5 seconds.
+- Success and error messages should use status-bar text color to distinguish state.
+- Success and error emphasis should reset automatically after 5 seconds.
 - Technical exception details must not be shown directly to users.
 
 Visual rules:
@@ -262,7 +261,7 @@ Required application-layer contracts:
 - `ISettingsService`: loads, validates, updates, and saves settings.
 - `ILocalizationService`: provides localized strings and culture direction.
 - `IFileDialogService`: wraps Windows open/save dialogs for testability.
-- `IMessageService`: coordinates status-bar and dismissible messages.
+- `IMessageService`: coordinates status-bar messages and message state.
 
 View models may call application services. Views must not call infrastructure directly.
 

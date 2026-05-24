@@ -14,7 +14,7 @@ public sealed class MessageService : IMessageService
         {
             Interval = TimeSpan.FromSeconds(5)
         };
-        _dismissTimer.Tick += (_, _) => Dismiss();
+        _dismissTimer.Tick += (_, _) => ResetMessageKind();
     }
 
     public event EventHandler<UserMessageChangedEventArgs>? MessageChanged;
@@ -23,24 +23,24 @@ public sealed class MessageService : IMessageService
     {
         _statusText = message;
         _dismissTimer.Stop();
-        MessageChanged?.Invoke(this, new UserMessageChangedEventArgs(_statusText, null, UserMessageKind.None));
+        MessageChanged?.Invoke(this, new UserMessageChangedEventArgs(_statusText, UserMessageKind.None));
     }
 
-    public void ShowSuccess(string message) => ShowDismissible(message, UserMessageKind.Success);
+    public void ShowSuccess(string message) => ShowTransientStatus(message, UserMessageKind.Success);
 
-    public void ShowError(string message) => ShowDismissible(message, UserMessageKind.Error);
+    public void ShowError(string message) => ShowTransientStatus(message, UserMessageKind.Error);
 
-    public void Dismiss()
+    private void ResetMessageKind()
     {
         _dismissTimer.Stop();
-        MessageChanged?.Invoke(this, new UserMessageChangedEventArgs(_statusText, null, UserMessageKind.None));
+        MessageChanged?.Invoke(this, new UserMessageChangedEventArgs(_statusText, UserMessageKind.None));
     }
 
-    private void ShowDismissible(string message, UserMessageKind kind)
+    private void ShowTransientStatus(string message, UserMessageKind kind)
     {
         _statusText = message;
         _dismissTimer.Stop();
-        MessageChanged?.Invoke(this, new UserMessageChangedEventArgs(_statusText, message, kind));
+        MessageChanged?.Invoke(this, new UserMessageChangedEventArgs(_statusText, kind));
         _dismissTimer.Start();
     }
 }

@@ -36,18 +36,30 @@
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
 
-        <Style x:Key="MessageHostStyle" TargetType="{x:Type Border}">
-            <Setter Property="Background" Value="#E8F4E8" />
-            <Setter Property="BorderBrush" Value="#6FA36F" />
-            <Setter Property="BorderThickness" Value="1" />
+        <Style x:Key="RowActionIconStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="RowActionButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Width" Value="28" />
+            <Setter Property="Height" Value="28" />
+            <Setter Property="Margin" Value="2,0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+
+        <Style x:Key="StatusTextBlockStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding MessageKind}" Value="{x:Static settings:UserMessageKind.Error}">
-                    <Setter Property="Background" Value="#FCEBEC" />
-                    <Setter Property="BorderBrush" Value="#C94C4C" />
+                    <Setter Property="Foreground" Value="#C62828" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding MessageKind}" Value="{x:Static settings:UserMessageKind.Success}">
-                    <Setter Property="Background" Value="#E8F4E8" />
-                    <Setter Property="BorderBrush" Value="#6FA36F" />
+                    <Setter Property="Foreground" Value="#1B7F37" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -84,73 +96,41 @@
         </Menu>
 
         <StatusBar DockPanel.Dock="Bottom">
-            <StatusBarItem Content="{Binding StatusText}" />
+            <StatusBarItem>
+                <TextBlock Text="{Binding StatusText}" Style="{StaticResource StatusTextBlockStyle}" />
+            </StatusBarItem>
         </StatusBar>
 
         <Grid Margin="16">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <ToolBarTray Grid.Row="0" Margin="0,0,0,12">
-                <ToolBar>
+            <Grid Grid.Row="0" Margin="0,0,0,12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
                     <Button Style="{StaticResource CommandButtonStyle}" Command="{Binding AddPdfsCommand}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Style="{StaticResource IconTextBlockStyle}" Text="&#xE710;" />
                             <TextBlock Text="{Binding AddPdfsText}" />
                         </StackPanel>
                     </Button>
-                    <Button Style="{StaticResource CommandButtonStyle}" Command="{Binding MoveUpCommand}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Style="{StaticResource IconTextBlockStyle}" Text="&#xE74A;" />
-                            <TextBlock Text="{Binding MoveUpText}" />
-                        </StackPanel>
-                    </Button>
-                    <Button Style="{StaticResource CommandButtonStyle}" Command="{Binding MoveDownCommand}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Style="{StaticResource IconTextBlockStyle}" Text="&#xE74B;" />
-                            <TextBlock Text="{Binding MoveDownText}" />
-                        </StackPanel>
-                    </Button>
-                    <Button Style="{StaticResource CommandButtonStyle}" Command="{Binding RemoveCommand}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Style="{StaticResource IconTextBlockStyle}" Text="&#xE738;" />
-                            <TextBlock Text="{Binding RemoveText}" />
-                        </StackPanel>
-                    </Button>
-                    <Separator />
-                    <Button Style="{StaticResource CommandButtonStyle}" Command="{Binding MergeCommand}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Style="{StaticResource IconTextBlockStyle}" Text="&#xE74E;" />
-                            <TextBlock Text="{Binding MergeText}" />
-                        </StackPanel>
-                    </Button>
-                </ToolBar>
-            </ToolBarTray>
+                </StackPanel>
 
-            <Border Grid.Row="1"
-                    Style="{StaticResource MessageHostStyle}"
-                    Visibility="{Binding HasMessage, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    Padding="10"
-                    Margin="0,0,0,12">
-                <DockPanel>
-                    <Button DockPanel.Dock="Right"
-                            Command="{Binding DismissMessageCommand}"
-                            MinHeight="24"
-                            Padding="8,2"
-                            ToolTip="{Binding DismissText}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Style="{StaticResource IconTextBlockStyle}" Text="&#xE711;" />
-                            <TextBlock Text="{Binding DismissText}" />
-                        </StackPanel>
-                    </Button>
-                    <TextBlock Text="{Binding MessageText}" VerticalAlignment="Center" TextWrapping="Wrap" />
-                </DockPanel>
-            </Border>
+                <Button Grid.Column="1" Style="{StaticResource CommandButtonStyle}" Command="{Binding MergeCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource IconTextBlockStyle}" Text="&#xE74E;" />
+                        <TextBlock Text="{Binding MergeText}" />
+                    </StackPanel>
+                </Button>
+            </Grid>
 
-            <Grid Grid.Row="2">
+            <Grid Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
@@ -169,8 +149,37 @@
                           KeyboardNavigation.TabNavigation="Continue">
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn x:Name="FileNameColumn" DisplayMemberBinding="{Binding FileName}" Width="240" />
-                            <GridViewColumn x:Name="FullPathColumn" DisplayMemberBinding="{Binding FullPath}" Width="640" />
+                            <GridViewColumn x:Name="FileNameColumn" DisplayMemberBinding="{Binding FileName}" Width="220" />
+                            <GridViewColumn x:Name="FullPathColumn" DisplayMemberBinding="{Binding FullPath}" Width="520" />
+                            <GridViewColumn x:Name="ActionsColumn" Width="112">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <Button Style="{StaticResource RowActionButtonStyle}"
+                                                    Command="{Binding DataContext.MoveFileUpCommand, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
+                                                    CommandParameter="{Binding}"
+                                                    ToolTip="{Binding DataContext.MoveUpText, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
+                                                    AutomationProperties.Name="{Binding DataContext.MoveUpText, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}">
+                                                <TextBlock Style="{StaticResource RowActionIconStyle}" Text="&#xE74A;" />
+                                            </Button>
+                                            <Button Style="{StaticResource RowActionButtonStyle}"
+                                                    Command="{Binding DataContext.MoveFileDownCommand, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
+                                                    CommandParameter="{Binding}"
+                                                    ToolTip="{Binding DataContext.MoveDownText, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
+                                                    AutomationProperties.Name="{Binding DataContext.MoveDownText, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}">
+                                                <TextBlock Style="{StaticResource RowActionIconStyle}" Text="&#xE74B;" />
+                                            </Button>
+                                            <Button Style="{StaticResource RowActionButtonStyle}"
+                                                    Command="{Binding DataContext.RemoveFileCommand, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
+                                                    CommandParameter="{Binding}"
+                                                    ToolTip="{Binding DataContext.RemoveText, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
+                                                    AutomationProperties.Name="{Binding DataContext.RemoveText, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}">
+                                                <TextBlock Style="{StaticResource RowActionIconStyle}" Text="&#xE738;" />
+                                            </Button>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
                         </GridView>
                     </ListView.View>
                 </ListView>

@@ -107,8 +107,8 @@ File names must match the main type name.
 - Disable merge controls while a merge is running.
 - Prevent duplicate merge requests.
 - Show clear success and error messages.
-- Let users dismiss messages.
-- Auto-dismiss transient messages after 5 seconds.
+- Show success and error state through status-bar text color.
+- Reset transient success and error emphasis after 5 seconds.
 - Confirm destructive actions, including overwriting an output file and clearing a file list.
 - Support keyboard navigation and standard shortcuts where applicable.
 - Persist window size, position, and state.

@@ -9,6 +9,4 @@ public interface IMessageService
     void ShowSuccess(string message);
 
     void ShowError(string message);
-
-    void Dismiss();
 }
