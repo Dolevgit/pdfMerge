@@ -56,9 +56,6 @@
 
                 <Border Margin="0,14,0,0"
                         Padding="8,6"
-                        Background="{DynamicResource AppSurfaceAltBrush}"
-                        BorderBrush="{DynamicResource AppBorderBrush}"
-                        BorderThickness="1"
                         CornerRadius="6">
                     <StackPanel Orientation="Horizontal"
                                 VerticalAlignment="Center">
