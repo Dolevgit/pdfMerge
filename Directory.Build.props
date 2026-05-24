@@ -7,6 +7,13 @@
     <LangVersion>latest</LangVersion>
     <Deterministic>true</Deterministic>
     <Version>1.0.0</Version>
-    <Authors>PdfMerge</Authors>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <InformationalVersion>1.0.0</InformationalVersion>
+    <Authors>Dolev A</Authors>
+    <Company>Dolev A</Company>
+    <Product>PdfMerge</Product>
+    <Copyright>Copyright (c) 2026 Dolev A</Copyright>
+    <RepositoryUrl>https://github.com/Dolevgit/pdfMerge</RepositoryUrl>
   </PropertyGroup>
 </Project>

@@ -1,5 +1,8 @@
 # Build And Deploy
 
+This document is retained for compatibility with earlier project docs.
+The canonical publish guide is `docs/build_publish.md`.
+
 ## 1. Restore
 
 ```powershell

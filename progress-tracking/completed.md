@@ -245,3 +245,21 @@ Summary:
 Verified in:
 
 - `dotnet build .\PdfMerge.sln`
+
+## PM-16 Public Release Preparation
+
+Summary:
+
+- Added public-facing `README.md`, `RELEASE_NOTES.md`, `CHANGELOG.md`, and `NOTICE`.
+- Added `docs/build_publish.md`, `docs/release_checklist.md`, and `docs/manual_validation.md` for release workflow and validation evidence.
+- Added `.gitignore` and GitHub issue and pull request templates for repository hygiene.
+- Updated release metadata with version, company, product, copyright, and repository URL.
+- Hardened the portable publish script with path safety checks, clean publish output, runtime parameter support, and release-document inclusion in the portable zip.
+- Published the self-contained portable `win-x64` package.
+
+Verified in:
+
+- `dotnet build .\PdfMerge.sln -c Release`
+- `.\build\publish-portable.ps1`
+- Portable zip contents check for `PdfMerge.App.exe`, `LICENSE`, `NOTICE`, `README.md`, and `RELEASE_NOTES.md`
+- Published app startup smoke check from `artifacts\publish\win-x64\PdfMerge.App.exe`

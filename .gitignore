@@ -1,10 +1,44 @@
-Guideline.md
-prompts/
+# Build
 bin/
 obj/
+
+# Visual Studio
 .vs/
-.idea/
 *.user
 *.suo
-data/
+*.userosscache
+*.sln.docstates
+
+# Rider
+.idea/
+
+# Logs
+*.log
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Publish / packaging
+publish/
 artifacts/
+
+# Runtime state
+data/
+
+# Test / coverage
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+# Local settings
+appsettings.Development.json
+appsettings.Local.json
+
+# Temporary Codex output
+.codex-temp/
+
+# Local project prompts / handoff inputs
+Guideline.md
+prompts/
