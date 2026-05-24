@@ -22,28 +22,29 @@
     </Window.InputBindings>
 
     <Window.Resources>
-        <Style x:Key="CommandButtonStyle" TargetType="{x:Type Button}">
+        <Style x:Key="CommandButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="Margin" Value="0,0,8,0" />
             <Setter Property="Padding" Value="10,6" />
             <Setter Property="MinHeight" Value="34" />
             <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style>
 
-        <Style x:Key="IconTextBlockStyle" TargetType="{x:Type TextBlock}">
+        <Style x:Key="IconTextBlockStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
             <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
             <Setter Property="FontSize" Value="14" />
             <Setter Property="Margin" Value="0,0,8,0" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
 
-        <Style x:Key="RowActionIconStyle" TargetType="{x:Type TextBlock}">
+        <Style x:Key="RowActionIconStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
             <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
             <Setter Property="FontSize" Value="13" />
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Center" />
         </Style>
 
-        <Style x:Key="RowActionButtonStyle" TargetType="{x:Type Button}">
+        <Style x:Key="RowActionButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="Width" Value="28" />
             <Setter Property="Height" Value="28" />
             <Setter Property="Margin" Value="2,0" />
@@ -52,11 +53,11 @@
             <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style>
 
-        <Style x:Key="SelectedFileItemStyle" TargetType="{x:Type ListViewItem}">
+        <Style x:Key="SelectedFileItemStyle" TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource {x:Type ListViewItem}}">
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         </Style>
 
-        <Style x:Key="HeaderFileNameTextBlockStyle" TargetType="{x:Type TextBlock}">
+        <Style x:Key="HeaderFileNameTextBlockStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
             <Setter Property="DockPanel.Dock" Value="Left" />
             <Setter Property="Width" Value="220" />
             <Setter Property="Margin" Value="8,0" />
@@ -70,14 +71,14 @@
             </Style.Triggers>
         </Style>
 
-        <Style x:Key="HeaderFullPathTextBlockStyle" TargetType="{x:Type TextBlock}">
+        <Style x:Key="HeaderFullPathTextBlockStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
             <Setter Property="Margin" Value="8,0" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="TextTrimming" Value="CharacterEllipsis" />
         </Style>
 
-        <Style x:Key="HeaderActionsTextBlockStyle" TargetType="{x:Type TextBlock}">
+        <Style x:Key="HeaderActionsTextBlockStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
             <Setter Property="DockPanel.Dock" Value="Right" />
             <Setter Property="Width" Value="112" />
             <Setter Property="Margin" Value="4,0" />
@@ -92,7 +93,7 @@
             </Style.Triggers>
         </Style>
 
-        <Style x:Key="RowFileNameTextBlockStyle" TargetType="{x:Type TextBlock}">
+        <Style x:Key="RowFileNameTextBlockStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
             <Setter Property="DockPanel.Dock" Value="Left" />
             <Setter Property="Width" Value="220" />
             <Setter Property="Margin" Value="8,0" />
@@ -105,7 +106,7 @@
             </Style.Triggers>
         </Style>
 
-        <Style x:Key="RowFullPathTextBlockStyle" TargetType="{x:Type TextBlock}">
+        <Style x:Key="RowFullPathTextBlockStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
             <Setter Property="Margin" Value="8,0" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="TextTrimming" Value="CharacterEllipsis" />
@@ -123,14 +124,14 @@
             </Style.Triggers>
         </Style>
 
-        <Style x:Key="StatusTextBlockStyle" TargetType="{x:Type TextBlock}">
+        <Style x:Key="StatusTextBlockStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding MessageKind}" Value="{x:Static settings:UserMessageKind.Error}">
-                    <Setter Property="Foreground" Value="#C62828" />
+                    <Setter Property="Foreground" Value="{DynamicResource AppErrorBrush}" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding MessageKind}" Value="{x:Static settings:UserMessageKind.Success}">
-                    <Setter Property="Foreground" Value="#1B7F37" />
+                    <Setter Property="Foreground" Value="{DynamicResource AppSuccessBrush}" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -149,6 +150,20 @@
                               Command="{Binding SetHebrewLanguageCommand}"
                               IsCheckable="True"
                               IsChecked="{Binding IsHebrewSelected, Mode=OneWay}" />
+                </MenuItem>
+                <MenuItem Header="{Binding ThemeMenuText}">
+                    <MenuItem Header="{Binding SystemThemeText}"
+                              Command="{Binding SetSystemThemeCommand}"
+                              IsCheckable="True"
+                              IsChecked="{Binding IsSystemThemeSelected, Mode=OneWay}" />
+                    <MenuItem Header="{Binding LightThemeText}"
+                              Command="{Binding SetLightThemeCommand}"
+                              IsCheckable="True"
+                              IsChecked="{Binding IsLightThemeSelected, Mode=OneWay}" />
+                    <MenuItem Header="{Binding DarkThemeText}"
+                              Command="{Binding SetDarkThemeCommand}"
+                              IsCheckable="True"
+                              IsChecked="{Binding IsDarkThemeSelected, Mode=OneWay}" />
                 </MenuItem>
                 <Separator />
                 <MenuItem Header="{Binding ExitText}" Command="{Binding ExitCommand}" />

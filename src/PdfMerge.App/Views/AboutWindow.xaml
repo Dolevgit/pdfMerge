@@ -2,19 +2,14 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Width="450"
-        Height="250"
+        Height="260"
         MinWidth="450"
-        MinHeight="250"
+        MinHeight="260"
         ShowInTaskbar="False"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner">
     <Window.Resources>
-        <SolidColorBrush x:Key="MutedBrush" Color="#666666" />
-        <SolidColorBrush x:Key="AccentBrush" Color="#2563EB" />
-        <SolidColorBrush x:Key="PanelBrush" Color="#F3F4F6" />
-        <SolidColorBrush x:Key="BorderBrush" Color="#D1D5DB" />
-
-        <Style x:Key="DialogButtonStyle" TargetType="{x:Type Button}">
+        <Style x:Key="DialogButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="Height" Value="28" />
             <Setter Property="Padding" Value="14,0" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
@@ -47,7 +42,7 @@
                 <TextBlock x:Name="VersionInfoTextBlock"
                            FontWeight="SemiBold" />
                 <TextBlock x:Name="LicenseInfoTextBlock"
-                           Foreground="{StaticResource MutedBrush}"
+                           Foreground="{DynamicResource AppMutedTextBrush}"
                            TextWrapping="Wrap" />
 
                 <TextBlock>
@@ -60,6 +55,9 @@
                 </TextBlock>
 
                 <Border Margin="0,14,0,0"
+                        Padding="8,6"
+                        Background="{DynamicResource AppSurfaceAltBrush}"
+                        BorderBrush="{DynamicResource AppBorderBrush}"
                         BorderThickness="1"
                         CornerRadius="6">
                     <StackPanel Orientation="Horizontal"

@@ -139,6 +139,10 @@ Required menu bar:
   - Language
     - English
     - Hebrew
+  - Theme
+    - Use system setting
+    - Light
+    - Dark
   - Exit
 - Edit
   - Move Up

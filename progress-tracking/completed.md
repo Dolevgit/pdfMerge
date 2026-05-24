@@ -89,6 +89,23 @@ Verified in:
 - `.\build\publish-portable.ps1`
 - Published app startup check from `artifacts/publish/win-x64/PdfMerge.App.exe`
 
+## PM-11 Manual Validation Pass
+
+Summary:
+
+- Closed the remaining dark-theme validation gap by adding a File > Theme submenu.
+- Added user-selectable System, Light, and Dark theme preferences.
+- Persisted theme changes immediately to portable settings.
+- Applied the saved theme at startup, with the System option resolving from the Windows app theme setting.
+- Refined menu styling so light and dark theme menu surfaces, submenus, hover states, and separators use app theme brushes consistently.
+- Removed unnecessary scroll bars from theme-styled menu popups.
+- Updated the menu contract documentation to include the Theme submenu.
+
+Verified in:
+
+- User-provided confirmation that all PM-11 validation items except dark theme were already complete.
+- `dotnet build .\PdfMerge.sln`
+
 ## PM-03 PDF Library Selection And Validation
 
 Summary:

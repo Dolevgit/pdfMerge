@@ -13,6 +13,8 @@ Current snapshot:
 - File picker, drag and drop, selected-file display, duplicate skipping, removal, select all, and single-item reordering are implemented for PDF inputs.
 - The merge workflow is implemented with save dialog output selection, overwrite confirmation, temp-file output safety, busy-state gating, friendly localized messages, and local failure logging.
 - English and Hebrew localization is implemented with a File > Language menu and persisted language selection.
+- Theme selection is implemented with a File > Theme menu for System, Light, and Dark preferences, with persisted selection.
+- Theme-aware menu styling now covers menu bars, submenus, hover states, and separators.
 - The selected-file list now includes row-level move up, move down, and remove icon actions, with the main command area simplified outside `ToolBarTray`.
 - Row-level actions stay pinned to the selected-file list edge: right in English/LTR and left in Hebrew/RTL.
 - Success and error messages are shown in the status bar with transient green/red text emphasis.
@@ -41,7 +43,7 @@ Maintenance rule:
 
 ## 3. Not Yet Started Tasks
 
-- `PM-11` Manual Validation Pass
+- None
 
 ## 4. Completed Tasks
 
@@ -55,6 +57,7 @@ Maintenance rule:
 - `PM-08` Portable Settings And Window State
 - `PM-09` Logging And Error Reporting
 - `PM-10` Portable Publish Baseline
+- `PM-11` Manual Validation Pass
 - `PM-12` File List Row Actions
 - `PM-13` Status Bar Message Styling
 - `PM-14` Sticky Row Action Layout
@@ -70,6 +73,7 @@ Maintenance rule:
 - File selection, drag and drop, duplicate skipping, selected-file display, remove, select all, and reordering are implemented for PM-05.
 - Merge workflow is implemented for PM-06, including temp-file output safety and overwrite confirmation.
 - English and Hebrew localization is implemented with immediate persisted language switching.
+- Theme selection is implemented with immediate persisted switching and a System option that follows the Windows app theme preference.
 - Window placement is loaded on startup and saved after resize/move/state changes and before close.
 - Selected PDF rows include direct move up, move down, and remove actions with localized tooltips and accessible names.
 - File row actions remain visible at the trailing physical edge for the current language direction.

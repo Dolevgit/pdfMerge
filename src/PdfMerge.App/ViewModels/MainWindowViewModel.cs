@@ -21,6 +21,7 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
     private readonly ISettingsService _settingsService;
     private readonly ILocalizationService _localizationService;
     private readonly IMessageService _messageService;
+    private readonly IThemeService _themeService;
     private readonly IConfirmationService _confirmationService;
     private readonly IFileDialogService _fileDialogService;
     private readonly IPdfMergeService _pdfMergeService;
@@ -39,6 +40,7 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
         ISettingsService settingsService,
         ILocalizationService localizationService,
         IMessageService messageService,
+        IThemeService themeService,
         IConfirmationService confirmationService,
         IFileDialogService fileDialogService,
         IPdfMergeService pdfMergeService,
@@ -49,6 +51,7 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
         _settingsService = settingsService;
         _localizationService = localizationService;
         _messageService = messageService;
+        _themeService = themeService;
         _confirmationService = confirmationService;
         _fileDialogService = fileDialogService;
         _pdfMergeService = pdfMergeService;
@@ -61,6 +64,9 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
         ExitCommand = new RelayCommand(_applicationLifetime.Shutdown);
         SetEnglishLanguageCommand = new RelayCommand(() => _ = SetLanguageAsync(SupportedLanguages.English));
         SetHebrewLanguageCommand = new RelayCommand(() => _ = SetLanguageAsync(SupportedLanguages.Hebrew));
+        SetSystemThemeCommand = new RelayCommand(() => _ = SetThemeAsync(ThemePreferences.System));
+        SetLightThemeCommand = new RelayCommand(() => _ = SetThemeAsync(ThemePreferences.Light));
+        SetDarkThemeCommand = new RelayCommand(() => _ = SetThemeAsync(ThemePreferences.Dark));
         MoveUpCommand = new RelayCommand(MoveSelectedFileUp, CanMoveSelectedFileUp);
         MoveDownCommand = new RelayCommand(MoveSelectedFileDown, CanMoveSelectedFileDown);
         RemoveCommand = new RelayCommand(RemoveSelectedFiles, HasSelectedFiles);
@@ -94,6 +100,12 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
 
     public ICommand SetHebrewLanguageCommand { get; }
 
+    public ICommand SetSystemThemeCommand { get; }
+
+    public ICommand SetLightThemeCommand { get; }
+
+    public ICommand SetDarkThemeCommand { get; }
+
     public RelayCommand MoveUpCommand { get; }
 
     public RelayCommand MoveDownCommand { get; }
@@ -126,6 +138,8 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
 
     public string LanguageMenuText => T("menu.language");
 
+    public string ThemeMenuText => T("menu.theme");
+
     public string AddPdfsText => T("command.addPdfs");
 
     public string ExitText => T("command.exit");
@@ -137,6 +151,18 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
     public bool IsEnglishSelected => string.Equals(_settings.Language, SupportedLanguages.English, StringComparison.OrdinalIgnoreCase);
 
     public bool IsHebrewSelected => string.Equals(_settings.Language, SupportedLanguages.Hebrew, StringComparison.OrdinalIgnoreCase);
+
+    public string SystemThemeText => T("theme.system");
+
+    public string LightThemeText => T("theme.light");
+
+    public string DarkThemeText => T("theme.dark");
+
+    public bool IsSystemThemeSelected => string.Equals(_settings.Theme, ThemePreferences.System, StringComparison.OrdinalIgnoreCase);
+
+    public bool IsLightThemeSelected => string.Equals(_settings.Theme, ThemePreferences.Light, StringComparison.OrdinalIgnoreCase);
+
+    public bool IsDarkThemeSelected => string.Equals(_settings.Theme, ThemePreferences.Dark, StringComparison.OrdinalIgnoreCase);
 
     public string MoveUpText => T("command.moveUp");
 
@@ -200,6 +226,7 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
     {
         _settings = await _settingsService.LoadAsync(cancellationToken).ConfigureAwait(true);
         ApplyCurrentLanguage();
+        ApplyCurrentTheme();
         _messageService.ShowStatus(T("status.ready"));
     }
 
@@ -317,6 +344,24 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
         ApplyCurrentLanguage();
         await SaveSettingsAsync(CancellationToken.None).ConfigureAwait(true);
         _messageService.ShowStatus(T("status.languageChanged"));
+    }
+
+    private async Task SetThemeAsync(string theme)
+    {
+        if (!ThemePreferences.IsSupported(theme))
+        {
+            return;
+        }
+
+        if (string.Equals(_settings.Theme, theme, StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        _settings.Theme = theme;
+        ApplyCurrentTheme();
+        await SaveSettingsAsync(CancellationToken.None).ConfigureAwait(true);
+        _messageService.ShowStatus(T("status.themeChanged"));
     }
 
     private async Task MergeAsync()
@@ -685,12 +730,19 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
         OnPropertyChanged(nameof(EditMenuText));
         OnPropertyChanged(nameof(HelpMenuText));
         OnPropertyChanged(nameof(LanguageMenuText));
+        OnPropertyChanged(nameof(ThemeMenuText));
         OnPropertyChanged(nameof(AddPdfsText));
         OnPropertyChanged(nameof(ExitText));
         OnPropertyChanged(nameof(EnglishLanguageText));
         OnPropertyChanged(nameof(HebrewLanguageText));
         OnPropertyChanged(nameof(IsEnglishSelected));
         OnPropertyChanged(nameof(IsHebrewSelected));
+        OnPropertyChanged(nameof(SystemThemeText));
+        OnPropertyChanged(nameof(LightThemeText));
+        OnPropertyChanged(nameof(DarkThemeText));
+        OnPropertyChanged(nameof(IsSystemThemeSelected));
+        OnPropertyChanged(nameof(IsLightThemeSelected));
+        OnPropertyChanged(nameof(IsDarkThemeSelected));
         OnPropertyChanged(nameof(MoveUpText));
         OnPropertyChanged(nameof(MoveDownText));
         OnPropertyChanged(nameof(RemoveText));
@@ -720,6 +772,14 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
             ? FlowDirection.RightToLeft
             : FlowDirection.LeftToRight;
         RaiseLocalizedPropertiesChanged();
+    }
+
+    private void ApplyCurrentTheme()
+    {
+        _themeService.ApplyTheme(_settings.Theme);
+        OnPropertyChanged(nameof(IsSystemThemeSelected));
+        OnPropertyChanged(nameof(IsLightThemeSelected));
+        OnPropertyChanged(nameof(IsDarkThemeSelected));
     }
 
     private bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)

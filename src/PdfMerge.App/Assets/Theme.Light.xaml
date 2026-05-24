@@ -1,0 +1,43 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Color x:Key="AppBackgroundColor">#F7F7F8</Color>
+    <Color x:Key="AppSurfaceColor">#FFFFFF</Color>
+    <Color x:Key="AppSurfaceAltColor">#F0F2F5</Color>
+    <Color x:Key="AppMenuColor">#F1F2F4</Color>
+    <Color x:Key="AppMenuHoverColor">#E2E7EF</Color>
+    <Color x:Key="AppTextColor">#1F2328</Color>
+    <Color x:Key="AppMutedTextColor">#606975</Color>
+    <Color x:Key="AppBorderColor">#C8CDD4</Color>
+    <Color x:Key="AppButtonHoverColor">#E9EEF6</Color>
+    <Color x:Key="AppButtonPressedColor">#DCE5F2</Color>
+    <Color x:Key="AppDisabledTextColor">#8A919B</Color>
+    <Color x:Key="AppSelectionColor">#D8E8FF</Color>
+    <Color x:Key="AppSuccessColor">#1B7F37</Color>
+    <Color x:Key="AppErrorColor">#C62828</Color>
+    <Color x:Key="AppLinkColor">#2563EB</Color>
+
+    <SolidColorBrush x:Key="AppBackgroundBrush" Color="{StaticResource AppBackgroundColor}" />
+    <SolidColorBrush x:Key="AppSurfaceBrush" Color="{StaticResource AppSurfaceColor}" />
+    <SolidColorBrush x:Key="AppSurfaceAltBrush" Color="{StaticResource AppSurfaceAltColor}" />
+    <SolidColorBrush x:Key="AppMenuBrush" Color="{StaticResource AppMenuColor}" />
+    <SolidColorBrush x:Key="AppMenuHoverBrush" Color="{StaticResource AppMenuHoverColor}" />
+    <SolidColorBrush x:Key="AppTextBrush" Color="{StaticResource AppTextColor}" />
+    <SolidColorBrush x:Key="AppMutedTextBrush" Color="{StaticResource AppMutedTextColor}" />
+    <SolidColorBrush x:Key="AppBorderBrush" Color="{StaticResource AppBorderColor}" />
+    <SolidColorBrush x:Key="AppButtonHoverBrush" Color="{StaticResource AppButtonHoverColor}" />
+    <SolidColorBrush x:Key="AppButtonPressedBrush" Color="{StaticResource AppButtonPressedColor}" />
+    <SolidColorBrush x:Key="AppDisabledTextBrush" Color="{StaticResource AppDisabledTextColor}" />
+    <SolidColorBrush x:Key="AppSelectionBrush" Color="{StaticResource AppSelectionColor}" />
+    <SolidColorBrush x:Key="AppSuccessBrush" Color="{StaticResource AppSuccessColor}" />
+    <SolidColorBrush x:Key="AppErrorBrush" Color="{StaticResource AppErrorColor}" />
+    <SolidColorBrush x:Key="AppLinkBrush" Color="{StaticResource AppLinkColor}" />
+
+    <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="{StaticResource AppTextColor}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.WindowTextBrushKey}" Color="{StaticResource AppTextColor}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}" Color="{StaticResource AppBackgroundColor}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="{StaticResource AppSurfaceColor}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.MenuBrushKey}" Color="{StaticResource AppMenuColor}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.MenuTextBrushKey}" Color="{StaticResource AppTextColor}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{StaticResource AppSelectionColor}" />
+    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="{StaticResource AppTextColor}" />
+</ResourceDictionary>

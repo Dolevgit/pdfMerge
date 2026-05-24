@@ -66,6 +66,7 @@ public partial class App : System.Windows.Application
         services.AddSingleton<IFileDialogService, WpfFileDialogService>();
         services.AddSingleton<ILocalizationService, JsonLocalizationService>();
         services.AddSingleton<IMessageService, MessageService>();
+        services.AddSingleton<IThemeService, WpfThemeService>();
         services.AddSingleton<ISettingsService, JsonSettingsService>();
         services.AddSingleton<IPdfInputValidator, PdfInputValidator>();
         services.AddSingleton<IPdfMergeService, PdfSharpMergeService>();
