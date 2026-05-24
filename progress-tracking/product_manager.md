@@ -16,6 +16,7 @@ Current snapshot:
 - The selected-file list now includes row-level move up, move down, and remove icon actions, with the main command area simplified outside `ToolBarTray`.
 - Row-level actions stay pinned to the selected-file list edge: right in English/LTR and left in Hebrew/RTL.
 - Success and error messages are shown in the status bar with transient green/red text emphasis.
+- Release metadata is set to version `1.0.0`, the PolyForm Noncommercial license is present, and Help > About opens a branded PdfMerge dialog with Codex attribution.
 - The approved product scope is a simple local PDF merger with English and Hebrew support.
 
 Task lifecycle:
@@ -57,6 +58,7 @@ Maintenance rule:
 - `PM-12` File List Row Actions
 - `PM-13` Status Bar Message Styling
 - `PM-14` Sticky Row Action Layout
+- `PM-15` About Window And Release Metadata
 
 ## 5. Current Product Reality
 
@@ -71,6 +73,7 @@ Maintenance rule:
 - Window placement is loaded on startup and saved after resize/move/state changes and before close.
 - Selected PDF rows include direct move up, move down, and remove actions with localized tooltips and accessible names.
 - File row actions remain visible at the trailing physical edge for the current language direction.
+- The app has version `1.0.0`, a root `LICENSE`, an About dialog using the PdfMerge logo, and a working GitHub project menu link.
 - Local logging and user-facing error reporting are implemented for current workflows.
 - The main window uses status-bar-only user messages with transient success/error color.
 - Tests require explicit permission before being added, per `Guideline.md`.

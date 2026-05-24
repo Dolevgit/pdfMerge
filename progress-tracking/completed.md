@@ -212,3 +212,19 @@ Summary:
 Verified in:
 
 - `dotnet build .\PdfMerge.sln`
+
+## PM-15 About Window And Release Metadata
+
+Summary:
+
+- Added a branded About dialog for PdfMerge based on the ActiveTime About window pattern.
+- Wired Help > About to open the modal About dialog instead of showing a status-bar message.
+- Added localized About dialog text for English and Hebrew.
+- Added the Codex by OpenAI badge to the About dialog.
+- Wired Help > Open GitHub Project to open the PdfMerge GitHub repository.
+- Added the root `LICENSE` file using PolyForm Noncommercial License 1.0.0.
+- Updated release metadata to version `1.0.0` and included `logo.png` as a WPF resource.
+
+Verified in:
+
+- `dotnet build .\PdfMerge.sln`

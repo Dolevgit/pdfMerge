@@ -1,4 +1,6 @@
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -9,6 +11,7 @@ namespace PdfMerge.App.Views;
 
 public partial class MainWindow : Window
 {
+    private const string ProjectGitHubUrl = "https://github.com/Dolevgit/pdfMerge";
     private static readonly TimeSpan PlacementSaveDelay = TimeSpan.FromMilliseconds(500);
 
     private readonly MainWindowViewModel _viewModel;
@@ -34,6 +37,8 @@ public partial class MainWindow : Window
         LocationChanged += OnLocationChanged;
         SizeChanged += OnSizeChanged;
         _viewModel.SelectAllRequested += OnSelectAllRequested;
+        _viewModel.AboutRequested += OnAboutRequested;
+        _viewModel.OpenGitHubProjectRequested += OnOpenGitHubProjectRequested;
     }
 
     private void OnLoaded(object sender, RoutedEventArgs e)
@@ -154,6 +159,37 @@ public partial class MainWindow : Window
     private void OnSelectAllRequested(object? sender, EventArgs e)
     {
         SelectedFilesListView.SelectAll();
+    }
+
+    private void OnAboutRequested(object? sender, EventArgs e)
+    {
+        var aboutWindow = new AboutWindow(_viewModel)
+        {
+            Owner = this
+        };
+
+        aboutWindow.ShowDialog();
+    }
+
+    private void OnOpenGitHubProjectRequested(object? sender, EventArgs e)
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = ProjectGitHubUrl,
+                UseShellExecute = true
+            });
+        }
+        catch (Exception exception)
+        {
+            MessageBox.Show(
+                this,
+                string.Format(CultureInfo.CurrentCulture, _viewModel.AboutOpenLinkFailedMessage, exception.Message),
+                _viewModel.AboutOpenLinkFailedTitle,
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+        }
     }
 
     private void OnPreviewDragOver(object sender, DragEventArgs e)

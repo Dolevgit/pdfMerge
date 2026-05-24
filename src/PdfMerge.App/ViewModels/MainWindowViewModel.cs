@@ -69,8 +69,8 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
         RemoveFileCommand = new RelayCommand(RemoveFile, CanRemoveFile);
         SelectAllCommand = new RelayCommand(RequestSelectAll, () => !_isMerging && SelectedFiles.Count > 0);
         MergeCommand = new RelayCommand(() => _ = MergeAsync(), CanMerge);
-        OpenGitHubProjectCommand = new RelayCommand(ShowDeferredFeatureMessage, () => false);
-        AboutCommand = new RelayCommand(() => _messageService.ShowSuccess(T("message.about")));
+        OpenGitHubProjectCommand = new RelayCommand(RequestOpenGitHubProject);
+        AboutCommand = new RelayCommand(RequestAbout);
 
         _messageService.MessageChanged += OnMessageChanged;
         SelectedFiles.CollectionChanged += (_, _) => RaiseCommandStatesChanged();
@@ -79,6 +79,10 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
 
     public event EventHandler? SelectAllRequested;
+
+    public event EventHandler? AboutRequested;
+
+    public event EventHandler? OpenGitHubProjectRequested;
 
     public ObservableCollection<SelectedPdfViewModel> SelectedFiles { get; }
 
@@ -147,6 +151,22 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
     public string OpenGitHubProjectText => T("command.openGitHubProject");
 
     public string AboutText => T("command.about");
+
+    public string AboutWindowTitleText => T("about.title");
+
+    public string AboutVersionText => T("about.version");
+
+    public string AboutLicenseText => T("about.license");
+
+    public string AboutOpenGitHubProjectText => T("about.openGitHubProject");
+
+    public string AboutBuiltWithCodexText => T("about.builtWithCodex");
+
+    public string AboutOkText => T("about.ok");
+
+    public string AboutOpenLinkFailedTitle => T("about.openLinkFailedTitle");
+
+    public string AboutOpenLinkFailedMessage => T("about.openLinkFailedMessage");
 
     public string SelectedFilesText => T("label.selectedFiles");
 
@@ -279,7 +299,7 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
         ShowAddFilesResult(addedCount, rejectedCount, duplicateCount, singleRejectionMessageKey);
     }
 
-    private void ShowDeferredFeatureMessage() => _messageService.ShowError(T("message.featureNotAvailable"));
+    private void RequestOpenGitHubProject() => OpenGitHubProjectRequested?.Invoke(this, EventArgs.Empty);
 
     private async Task SetLanguageAsync(string language)
     {
@@ -537,6 +557,8 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
 
     private void RequestSelectAll() => SelectAllRequested?.Invoke(this, EventArgs.Empty);
 
+    private void RequestAbout() => AboutRequested?.Invoke(this, EventArgs.Empty);
+
     private bool CanMerge() => !_isMerging && SelectedFiles.Count >= 2;
 
     private async Task<string?> ValidateMergeInputsAsync(IReadOnlyList<PdfInputFile> inputFiles, CancellationToken cancellationToken)
@@ -676,6 +698,14 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
         OnPropertyChanged(nameof(MergeText));
         OnPropertyChanged(nameof(OpenGitHubProjectText));
         OnPropertyChanged(nameof(AboutText));
+        OnPropertyChanged(nameof(AboutWindowTitleText));
+        OnPropertyChanged(nameof(AboutVersionText));
+        OnPropertyChanged(nameof(AboutLicenseText));
+        OnPropertyChanged(nameof(AboutOpenGitHubProjectText));
+        OnPropertyChanged(nameof(AboutBuiltWithCodexText));
+        OnPropertyChanged(nameof(AboutOkText));
+        OnPropertyChanged(nameof(AboutOpenLinkFailedTitle));
+        OnPropertyChanged(nameof(AboutOpenLinkFailedMessage));
         OnPropertyChanged(nameof(SelectedFilesText));
         OnPropertyChanged(nameof(FileNameHeaderText));
         OnPropertyChanged(nameof(FullPathHeaderText));

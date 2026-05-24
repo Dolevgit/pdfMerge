@@ -227,7 +227,7 @@ Manual validation must cover:
 ## 13. Versioning Rules
 
 - Use semantic versioning: `MAJOR.MINOR.PATCH`.
-- Start the first releasable version at `0.1.0` unless the owner chooses a different release plan.
+- The first releasable version is `1.0.0`.
 - Increment `PATCH` for bug fixes.
 - Increment `MINOR` for backward-compatible features.
 - Increment `MAJOR` only for breaking user-facing or storage changes.

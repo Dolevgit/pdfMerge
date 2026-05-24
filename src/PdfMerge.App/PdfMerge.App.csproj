@@ -25,6 +25,12 @@
     <Resource Include="..\..\icon.ico">
       <Link>Assets\icon.ico</Link>
     </Resource>
+    <Resource Include="..\..\logo.png">
+      <Link>Assets\pdfmerge-logo.png</Link>
+    </Resource>
+    <Resource Include="..\..\codex-logo-small.png">
+      <Link>Assets\codex-logo-small.png</Link>
+    </Resource>
   </ItemGroup>
 
 </Project>
