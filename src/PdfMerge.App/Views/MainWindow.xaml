@@ -52,6 +52,77 @@
             <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style>
 
+        <Style x:Key="SelectedFileItemStyle" TargetType="{x:Type ListViewItem}">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        </Style>
+
+        <Style x:Key="HeaderFileNameTextBlockStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="DockPanel.Dock" Value="Left" />
+            <Setter Property="Width" Value="220" />
+            <Setter Property="Margin" Value="8,0" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding FlowDirection}" Value="RightToLeft">
+                    <Setter Property="DockPanel.Dock" Value="Right" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="HeaderFullPathTextBlockStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="Margin" Value="8,0" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        </Style>
+
+        <Style x:Key="HeaderActionsTextBlockStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="DockPanel.Dock" Value="Right" />
+            <Setter Property="Width" Value="112" />
+            <Setter Property="Margin" Value="4,0" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding FlowDirection}" Value="RightToLeft">
+                    <Setter Property="DockPanel.Dock" Value="Left" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="RowFileNameTextBlockStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="DockPanel.Dock" Value="Left" />
+            <Setter Property="Width" Value="220" />
+            <Setter Property="Margin" Value="8,0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding DataContext.FlowDirection, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}" Value="RightToLeft">
+                    <Setter Property="DockPanel.Dock" Value="Right" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="RowFullPathTextBlockStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="Margin" Value="8,0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        </Style>
+
+        <Style x:Key="RowActionsPanelStyle" TargetType="{x:Type StackPanel}">
+            <Setter Property="DockPanel.Dock" Value="Right" />
+            <Setter Property="Width" Value="112" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="Orientation" Value="Horizontal" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding DataContext.FlowDirection, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}" Value="RightToLeft">
+                    <Setter Property="DockPanel.Dock" Value="Left" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
         <Style x:Key="StatusTextBlockStyle" TargetType="{x:Type TextBlock}">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
             <Style.Triggers>
@@ -86,8 +157,6 @@
                 <MenuItem Header="{Binding MoveUpText}" Command="{Binding MoveUpCommand}" />
                 <MenuItem Header="{Binding MoveDownText}" Command="{Binding MoveDownCommand}" />
                 <MenuItem Header="{Binding RemoveText}" Command="{Binding RemoveCommand}" InputGestureText="Del" />
-                <Separator />
-                <MenuItem Header="{Binding SelectAllText}" Command="{Binding SelectAllCommand}" InputGestureText="Ctrl+A" />
             </MenuItem>
             <MenuItem Header="{Binding HelpMenuText}">
                 <MenuItem Header="{Binding OpenGitHubProjectText}" Command="{Binding OpenGitHubProjectCommand}" />
@@ -133,55 +202,70 @@
             <Grid Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0"
-                           Text="{Binding SelectedFilesText}"
-                           FontWeight="SemiBold"
-                           Margin="0,0,0,8" />
+                <DockPanel Grid.Row="1"
+                           LastChildFill="True"
+                           FlowDirection="LeftToRight"
+                           Margin="0,0,0,4">
+                    <TextBlock Text="{Binding FileNameHeaderText}"
+                               FlowDirection="{Binding FlowDirection}"
+                               Style="{StaticResource HeaderFileNameTextBlockStyle}" />
+                    <TextBlock Text="{Binding ActionsHeaderText}"
+                               FlowDirection="{Binding FlowDirection}"
+                               Style="{StaticResource HeaderActionsTextBlockStyle}" />
+                    <TextBlock Text="{Binding FullPathHeaderText}"
+                               FlowDirection="{Binding FlowDirection}"
+                               Style="{StaticResource HeaderFullPathTextBlockStyle}" />
+                </DockPanel>
 
                 <ListView x:Name="SelectedFilesListView"
-                          Grid.Row="1"
+                          Grid.Row="2"
                           ItemsSource="{Binding SelectedFiles}"
+                          ItemContainerStyle="{StaticResource SelectedFileItemStyle}"
                           SelectionMode="Extended"
                           SelectionChanged="OnSelectedFilesSelectionChanged"
-                          KeyboardNavigation.TabNavigation="Continue">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn x:Name="FileNameColumn" DisplayMemberBinding="{Binding FileName}" Width="220" />
-                            <GridViewColumn x:Name="FullPathColumn" DisplayMemberBinding="{Binding FullPath}" Width="520" />
-                            <GridViewColumn x:Name="ActionsColumn" Width="112">
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                            <Button Style="{StaticResource RowActionButtonStyle}"
-                                                    Command="{Binding DataContext.MoveFileUpCommand, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
-                                                    CommandParameter="{Binding}"
-                                                    ToolTip="{Binding DataContext.MoveUpText, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
-                                                    AutomationProperties.Name="{Binding DataContext.MoveUpText, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}">
-                                                <TextBlock Style="{StaticResource RowActionIconStyle}" Text="&#xE74A;" />
-                                            </Button>
-                                            <Button Style="{StaticResource RowActionButtonStyle}"
-                                                    Command="{Binding DataContext.MoveFileDownCommand, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
-                                                    CommandParameter="{Binding}"
-                                                    ToolTip="{Binding DataContext.MoveDownText, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
-                                                    AutomationProperties.Name="{Binding DataContext.MoveDownText, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}">
-                                                <TextBlock Style="{StaticResource RowActionIconStyle}" Text="&#xE74B;" />
-                                            </Button>
-                                            <Button Style="{StaticResource RowActionButtonStyle}"
-                                                    Command="{Binding DataContext.RemoveFileCommand, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
-                                                    CommandParameter="{Binding}"
-                                                    ToolTip="{Binding DataContext.RemoveText, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
-                                                    AutomationProperties.Name="{Binding DataContext.RemoveText, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}">
-                                                <TextBlock Style="{StaticResource RowActionIconStyle}" Text="&#xE738;" />
-                                            </Button>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                        </GridView>
-                    </ListView.View>
+                          KeyboardNavigation.TabNavigation="Continue"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <DockPanel LastChildFill="True"
+                                       FlowDirection="LeftToRight"
+                                       MinHeight="34">
+                                <TextBlock Text="{Binding FileName}"
+                                           FlowDirection="{Binding DataContext.FlowDirection, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
+                                           Style="{StaticResource RowFileNameTextBlockStyle}" />
+                                <StackPanel Style="{StaticResource RowActionsPanelStyle}">
+                                    <Button Style="{StaticResource RowActionButtonStyle}"
+                                            Command="{Binding DataContext.MoveFileUpCommand, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
+                                            CommandParameter="{Binding}"
+                                            ToolTip="{Binding DataContext.MoveUpText, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
+                                            AutomationProperties.Name="{Binding DataContext.MoveUpText, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}">
+                                        <TextBlock Style="{StaticResource RowActionIconStyle}" Text="&#xE74A;" />
+                                    </Button>
+                                    <Button Style="{StaticResource RowActionButtonStyle}"
+                                            Command="{Binding DataContext.MoveFileDownCommand, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
+                                            CommandParameter="{Binding}"
+                                            ToolTip="{Binding DataContext.MoveDownText, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
+                                            AutomationProperties.Name="{Binding DataContext.MoveDownText, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}">
+                                        <TextBlock Style="{StaticResource RowActionIconStyle}" Text="&#xE74B;" />
+                                    </Button>
+                                    <Button Style="{StaticResource RowActionButtonStyle}"
+                                            Command="{Binding DataContext.RemoveFileCommand, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
+                                            CommandParameter="{Binding}"
+                                            ToolTip="{Binding DataContext.RemoveText, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
+                                            AutomationProperties.Name="{Binding DataContext.RemoveText, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}">
+                                        <TextBlock Style="{StaticResource RowActionIconStyle}" Text="&#xE738;" />
+                                    </Button>
+                                </StackPanel>
+                                <TextBlock Text="{Binding FullPath}"
+                                           FlowDirection="{Binding DataContext.FlowDirection, RelativeSource={RelativeSource AncestorType={x:Type ListView}}}"
+                                           Style="{StaticResource RowFullPathTextBlockStyle}" />
+                            </DockPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
                 </ListView>
             </Grid>
         </Grid>

@@ -13,6 +13,7 @@ Current snapshot:
 - The merge workflow is implemented with save dialog output selection, overwrite confirmation, temp-file output safety, busy-state gating, friendly localized messages, and local failure logging.
 - English and Hebrew localization is implemented with a File > Language menu and persisted language selection.
 - The selected-file list now includes row-level move up, move down, and remove icon actions, with the main command area simplified outside `ToolBarTray`.
+- Row-level actions stay pinned to the selected-file list edge: right in English/LTR and left in Hebrew/RTL.
 - Success and error messages are shown in the status bar with transient green/red text emphasis.
 - The approved product scope is a simple local PDF merger with English and Hebrew support.
 
@@ -54,6 +55,7 @@ Maintenance rule:
 - `PM-10` Portable Publish Baseline
 - `PM-12` File List Row Actions
 - `PM-13` Status Bar Message Styling
+- `PM-14` Sticky Row Action Layout
 
 ## 5. Current Product Reality
 
@@ -66,6 +68,7 @@ Maintenance rule:
 - Merge workflow is implemented for PM-06, including temp-file output safety and overwrite confirmation.
 - English and Hebrew localization is implemented with immediate persisted language switching.
 - Selected PDF rows include direct move up, move down, and remove actions with localized tooltips and accessible names.
+- File row actions remain visible at the trailing physical edge for the current language direction.
 - Local logging and user-facing error reporting are implemented for current workflows.
 - The main window uses status-bar-only user messages with transient success/error color.
 - Tests require explicit permission before being added, per `Guideline.md`.

@@ -23,10 +23,6 @@ public partial class MainWindow : Window
         StateChanged += OnStateChanged;
         LocationChanged += OnLocationChanged;
         SizeChanged += OnSizeChanged;
-        _viewModel.PropertyChanged += OnViewModelPropertyChanged;
-        FileNameColumn.Header = _viewModel.FileNameHeaderText;
-        FullPathColumn.Header = _viewModel.FullPathHeaderText;
-        ActionsColumn.Header = _viewModel.ActionsHeaderText;
         _viewModel.SelectAllRequested += OnSelectAllRequested;
     }
 
@@ -104,22 +100,6 @@ public partial class MainWindow : Window
     private void OnSelectedFilesSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         _viewModel.SetSelectedFiles(SelectedFilesListView.SelectedItems.Cast<SelectedPdfViewModel>());
-    }
-
-    private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (string.Equals(e.PropertyName, nameof(MainWindowViewModel.FileNameHeaderText), StringComparison.Ordinal))
-        {
-            FileNameColumn.Header = _viewModel.FileNameHeaderText;
-        }
-        else if (string.Equals(e.PropertyName, nameof(MainWindowViewModel.FullPathHeaderText), StringComparison.Ordinal))
-        {
-            FullPathColumn.Header = _viewModel.FullPathHeaderText;
-        }
-        else if (string.Equals(e.PropertyName, nameof(MainWindowViewModel.ActionsHeaderText), StringComparison.Ordinal))
-        {
-            ActionsColumn.Header = _viewModel.ActionsHeaderText;
-        }
     }
 
     private void OnSelectAllRequested(object? sender, EventArgs e)

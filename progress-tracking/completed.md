@@ -197,3 +197,17 @@ Summary:
 Verified in:
 
 - `dotnet build .\PdfMerge.sln`
+
+## PM-14 Sticky Row Action Layout
+
+Summary:
+
+- Replaced the selected-files `GridView` with a stretchable item template.
+- Added a custom localized header row for file name, full path, and actions.
+- Pinned row action buttons to the right edge in left-to-right layout and to the left edge in right-to-left layout.
+- Kept long file names and paths trimmed so they cannot push action buttons offscreen.
+- Removed obsolete code-behind header synchronization.
+
+Verified in:
+
+- `dotnet build .\PdfMerge.sln`
